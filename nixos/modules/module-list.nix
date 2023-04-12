@@ -1382,6 +1382,8 @@
   ./virtualisation/container-config.nix
   ./virtualisation/containerd.nix
   ./virtualisation/containers.nix
+  ./virtualisation/containers-next
+  ./virtualisation/nixos-containers.nix
   ./virtualisation/cri-o.nix
   ./virtualisation/docker-rootless.nix
   ./virtualisation/docker.nix

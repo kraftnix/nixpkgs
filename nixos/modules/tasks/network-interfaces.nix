@@ -596,7 +596,7 @@ in
       type = types.bool;
       default = false;
       description = lib.mdDoc ''
-        In containers, whether to use the
+        *Deprecated:* In containers, whether to use the
         {file}`resolv.conf` supplied by the host.
       '';
     };
