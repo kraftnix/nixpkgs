@@ -3,12 +3,13 @@
 , buildPythonPackage
 , fetchFromGitHub
 , pythonOlder
+, setuptools
 }:
 
 buildPythonPackage rec {
   pname = "aioairzone";
-  version = "0.5.3";
-  format = "setuptools";
+  version = "0.6.3";
+  format = "pyproject";
 
   disabled = pythonOlder "3.8";
 
@@ -16,8 +17,12 @@ buildPythonPackage rec {
     owner = "Noltari";
     repo = pname;
     rev = "refs/tags/${version}";
-    hash = "sha256-A2jk8gXqKeQ3b2p9/bkPat1NdhUOFdJCZeSFg//D/hA=";
+    hash = "sha256-grUfhUc8U7d7GgUa8TfvSPYOYr4IW1mZM0tl6I5gUdg=";
   };
+
+  nativeBuildInputs = [
+    setuptools
+  ];
 
   propagatedBuildInputs = [
     aiohttp

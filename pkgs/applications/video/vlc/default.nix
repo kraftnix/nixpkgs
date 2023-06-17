@@ -54,6 +54,7 @@
 , lua5
 , mpeg2dec
 , ncurses
+, openssl
 , perl
 , pkg-config
 , removeReferencesTo
@@ -71,7 +72,7 @@
 , onlyLibVLC ? false
 , skins2Support ? !onlyLibVLC, freetype
 , waylandSupport ? true, wayland, wayland-protocols
-, withQt5 ? true, qtbase, qtsvg, qtwayland, qtx11extras, wrapQtAppsHook
+, withQt5 ? true, qtbase, qtsvg, qtwayland, qtx11extras, wrapQtAppsHook, wrapGAppsHook
 }:
 
 # chromecastSupport requires TCP port 8010 to be open for it to work.
@@ -158,6 +159,7 @@ stdenv.mkDerivation rec {
     libXvMC
     xcbutilkeysyms
   ])
+  ++ optional onlyLibVLC openssl # not sure why
   ++ optional (!stdenv.hostPlatform.isAarch && !onlyLibVLC) live555
   ++ optional jackSupport libjack2
   ++ optionals chromecastSupport [ libmicrodns protobuf ]
@@ -177,6 +179,7 @@ stdenv.mkDerivation rec {
     pkg-config
     removeReferencesTo
     unzip
+    wrapGAppsHook
   ]
   ++ optionals withQt5 [ wrapQtAppsHook ]
   ++ optionals waylandSupport [ wayland wayland-protocols ];
@@ -207,6 +210,14 @@ stdenv.mkDerivation rec {
   postPatch = ''
     substituteInPlace modules/text_renderer/freetype/platform_fonts.h --replace \
       /usr/share/fonts/truetype/freefont ${freefont_ttf}/share/fonts/truetype
+  '';
+
+
+  # to prevent double wrapping of Qtwrap and Gwrap
+  dontWrapGApps = true;
+
+  preFixup = ''
+    qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
   '';
 
   # - Touch plugins (plugins cache keyed off mtime and file size:

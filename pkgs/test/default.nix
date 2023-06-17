@@ -53,7 +53,6 @@ with pkgs;
 
   pkg-config = recurseIntoAttrs (callPackage ../top-level/pkg-config/tests.nix { });
 
-  rustCustomSysroot = callPackage ./rust-sysroot {};
   buildRustCrate = callPackage ../build-support/rust/build-rust-crate/test { };
   importCargoLock = callPackage ../build-support/rust/test/import-cargo-lock { };
 
@@ -86,6 +85,8 @@ with pkgs;
   cue-validation = callPackage ./cue {};
 
   coq = callPackage ./coq {};
+
+  dotnet = recurseIntoAttrs (callPackages ./dotnet { });
 
   makeHardcodeGsettingsPatch = callPackage ./make-hardcode-gsettings-patch { };
 

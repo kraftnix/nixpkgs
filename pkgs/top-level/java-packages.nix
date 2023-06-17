@@ -34,7 +34,7 @@ in {
       package = if stdenv.isLinux
         then package-linux
         else package-darwin;
-    in rec {
+    in {
       inherit package-linux package-darwin;
 
       jdk-hotspot = callPackage package.jdk-hotspot {};
@@ -66,11 +66,7 @@ in {
       headless = openjdk.override { headless = true; };
     };
 
-    openjdkDarwinMissing = version:
-      abort "OpenJDK ${builtins.toString version} is currently not supported on Darwin by nixpkgs.";
-
   in rec {
-
     adoptopenjdk-8 = mkAdoptopenjdk
       ../development/compilers/adoptopenjdk-bin/jdk8-linux.nix
       ../development/compilers/adoptopenjdk-bin/jdk8-darwin.nix;
@@ -110,6 +106,7 @@ in {
     openjdk13-bootstrap = mkBootstrap adoptopenjdk-13
       ../development/compilers/openjdk/12.nix
       (bootstrapArgs // {
+        inherit openjdk11-bootstrap;
         /* build segfaults with gcc9 or newer, so use gcc8 like Debian does */
         stdenv = gcc8Stdenv;
       });
@@ -274,7 +271,8 @@ in {
     junit_4_12;
 
   inherit (callPackage ../development/java-modules/jogl { })
-    jogl_2_3_2;
+    jogl_2_3_2
+    jogl_2_4_0;
 
   inherit (callPackage ../development/java-modules/log4j { inherit fetchMaven; })
     log4j_1_2_12;

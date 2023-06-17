@@ -1,26 +1,32 @@
-{ lib, stdenv, fetchFromGitHub, curl, perl }:
+{ lib, stdenv, fetchFromGitHub, curl, python3, python3Packages, trurl, testers }:
 
 stdenv.mkDerivation rec {
   pname = "trurl";
-  version = "0.3";
+  version = "0.7";
 
   src = fetchFromGitHub {
     owner = "curl";
     repo = pname;
     rev = "${pname}-${version}";
-    sha256 = "sha256-z7Na7lXDzSmBTuSBaizyG892D3IfbN43ytPjOEQ9CAA=";
+    hash = "sha256-2F/01FUsOa8ZqU1YHrxTD4KcJul2OEoW/RJCXoLfywg=";
   };
 
+  outputs = [ "out" "dev" "man" ];
   separateDebugInfo = stdenv.isLinux;
 
   enableParallelBuilding = true;
 
+  nativeBuildInputs = [ curl ];
   buildInputs = [ curl ];
   makeFlags = [ "PREFIX=$(out)" ];
 
   doCheck = true;
-  checkInputs = [ perl ];
+  nativeCheckInputs = [ python3 python3Packages.packaging ];
   checkTarget = "test";
+
+  passthru.tests.version = testers.testVersion {
+    package = trurl;
+  };
 
   meta = with lib; {
     description = "A command line tool for URL parsing and manipulation";

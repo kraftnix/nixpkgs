@@ -12,6 +12,7 @@
   tree-sitter-cpp = lib.importJSON ./tree-sitter-cpp.json;
   tree-sitter-css = lib.importJSON ./tree-sitter-css.json;
   tree-sitter-cuda = lib.importJSON ./tree-sitter-cuda.json;
+  tree-sitter-cue = lib.importJSON ./tree-sitter-cue.json;
   tree-sitter-dart = lib.importJSON ./tree-sitter-dart.json;
   tree-sitter-devicetree = lib.importJSON ./tree-sitter-devicetree.json;
   tree-sitter-dockerfile = lib.importJSON ./tree-sitter-dockerfile.json;
@@ -57,6 +58,7 @@
   tree-sitter-nickel = lib.importJSON ./tree-sitter-nickel.json;
   tree-sitter-nix = lib.importJSON ./tree-sitter-nix.json;
   tree-sitter-norg = lib.importJSON ./tree-sitter-norg.json;
+  tree-sitter-nu = lib.importJSON ./tree-sitter-nu.json;
   tree-sitter-ocaml = lib.importJSON ./tree-sitter-ocaml.json;
   tree-sitter-org-nvim = lib.importJSON ./tree-sitter-org-nvim.json;
   tree-sitter-perl = lib.importJSON ./tree-sitter-perl.json;

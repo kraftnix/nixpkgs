@@ -17,7 +17,6 @@
 , qtbase ? null
 , pythonSupport ? false
 , swig2 ? null
-, python ? null
 # only for passthru.tests
 , libsForQt5
 , python3
@@ -27,11 +26,11 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "gpgme";
-  version = "1.19.0";
+  version = "1.20.0";
 
   src = fetchurl {
     url = "mirror://gnupg/gpgme/${pname}-${version}.tar.bz2";
-    hash = "sha256-y1hJTcQV+6nusSuCZVCtMZDckuJlxbsq4aIckoQc/Tg=";
+    hash = "sha256-JaV4Wl2jVmiQAUQJJrlOln0C4TxJ63dD417wzyLkJ1A=";
   };
 
   patches = [
@@ -51,10 +50,14 @@ stdenv.mkDerivation rec {
     pkg-config
     texinfo
   ] ++ lib.optionals pythonSupport [
+    python3.pythonForBuild
     ncurses
-    python
     swig2
     which
+  ];
+
+  buildInputs = lib.optionals pythonSupport [
+    python3
   ];
 
   propagatedBuildInputs = [
@@ -94,6 +97,8 @@ stdenv.mkDerivation rec {
     # https://www.gnupg.org/documentation/manuals/gpgme/Largefile-Support-_0028LFS_0029.html
     ++ lib.optional stdenv.hostPlatform.is32bit "-D_FILE_OFFSET_BITS=64"
   );
+
+  enableParallelBuilding = true;
 
   # prevent tests from being run during the buildPhase
   makeFlags = [ "tests=" ];

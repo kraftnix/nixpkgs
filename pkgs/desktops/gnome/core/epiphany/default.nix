@@ -36,11 +36,11 @@
 
 stdenv.mkDerivation rec {
   pname = "epiphany";
-  version = "44.1";
+  version = "44.3";
 
   src = fetchurl {
     url = "mirror://gnome/sources/${pname}/${lib.versions.major version}/${pname}-${version}.tar.xz";
-    sha256 = "u60o/HJzqGa5teXdVoa9BIQww/C+7UwIJgtNCN2P+Fs=";
+    sha256 = "9ekEsuUQIQTYt/46YVA0rdeN4DEWSStUy968ooC92Jk=";
   };
 
   nativeBuildInputs = [

@@ -125,10 +125,10 @@ crate_: lib.makeOverridable
       #   hello = attrs: { buildInputs = [ openssl ]; };
       # }
     , crateOverrides
-      # Rust library dependencies, i.e. other libaries that were built
+      # Rust library dependencies, i.e. other libraries that were built
       # with buildRustCrate.
     , dependencies
-      # Rust build dependencies, i.e. other libaries that were built
+      # Rust build dependencies, i.e. other libraries that were built
       # with buildRustCrate and are used by a build script.
     , buildDependencies
       # Specify the "extern" name of a library if it differs from the library target.
@@ -300,7 +300,7 @@ crate_: lib.makeOverridable
           (crate.features ++ features)
         );
 
-      libName = if crate ? libName then crate.libName else crate.crateName;
+      libName = crate.libName or crate.crateName;
       libPath = lib.optionalString (crate ? libPath) crate.libPath;
 
       # Seed the symbol hashes with something unique every time.
@@ -329,7 +329,7 @@ crate_: lib.makeOverridable
       colors = lib.attrByPath [ "colors" ] "always" crate;
       extraLinkFlags = lib.concatStringsSep " " (crate.extraLinkFlags or [ ]);
       edition = crate.edition or null;
-      codegenUnits = if crate ? codegenUnits then crate.codegenUnits else 1;
+      codegenUnits = crate.codegenUnits or 1;
       extraRustcOpts =
         lib.optionals (crate ? extraRustcOpts) crate.extraRustcOpts
           ++ extraRustcOpts_
@@ -352,6 +352,7 @@ crate_: lib.makeOverridable
           metadata hasCrateBin crateBin verbose colors
           extraRustcOpts buildTests codegenUnits;
       };
+      dontStrip = !release;
       installPhase = installCrate crateName metadata buildTests;
 
       # depending on the test setting we are either producing something with bins

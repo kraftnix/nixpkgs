@@ -38,6 +38,12 @@ backendStdenv.mkDerivation {
     stdenv.cc.cc.lib
   ];
 
+  # Picked up by autoPatchelf
+  # Needed e.g. for libnvrtc to locate (dlopen) libnvrtc-builtins
+  appendRunpaths = [
+    "$ORIGIN"
+  ];
+
   dontBuild = true;
 
   # TODO: choose whether to install static/dynamic libs
@@ -54,6 +60,7 @@ backendStdenv.mkDerivation {
   meta = {
     description = attrs.name;
     license = lib.licenses.unfree;
+    maintainers = lib.teams.cuda.members;
     platforms = lib.optionals (lib.hasAttr arch attrs) [ "x86_64-linux" ];
   };
 }

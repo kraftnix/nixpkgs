@@ -7,15 +7,17 @@
 , fetchFromGitHub
 , pycognito
 , pytest-aiohttp
+, pytest-timeout
 , pytestCheckHook
 , pythonOlder
 , snitun
-, warrant
+, syrupy
+, xmltodict
 }:
 
 buildPythonPackage rec {
   pname = "hass-nabucasa";
-  version = "0.64.0";
+  version = "0.67.1";
   format = "setuptools";
 
   disabled = pythonOlder "3.8";
@@ -24,7 +26,7 @@ buildPythonPackage rec {
     owner = "nabucasa";
     repo = pname;
     rev = "refs/tags/${version}";
-    hash = "sha256-30Z8KBgcd53Nd9lf39Wt28PaYFcnBZ5LC7B+1cestKM=";
+    hash = "sha256-/cu7+fMbe9kyWGGBGBwjsiA6PXoUJZ7IFzpEcnVSLn0=";
   };
 
   postPatch = ''
@@ -41,12 +43,14 @@ buildPythonPackage rec {
     attrs
     pycognito
     snitun
-    warrant
   ];
 
   nativeCheckInputs = [
     pytest-aiohttp
+    pytest-timeout
     pytestCheckHook
+    syrupy
+    xmltodict
   ];
 
   pythonImportsCheck = [

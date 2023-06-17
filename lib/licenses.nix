@@ -178,6 +178,11 @@ in mkLicense lset) ({
     fullName = ''BSD 3-clause "New" or "Revised" License'';
   };
 
+  bsd3Clear = {
+    spdxId = "BSD-3-Clause-Clear";
+    fullName = "BSD 3-Clause Clear License";
+  };
+
   bsdOriginal = {
     spdxId = "BSD-4-Clause";
     fullName = ''BSD 4-clause "Original" or "Old" License'';
@@ -202,11 +207,23 @@ in mkLicense lset) ({
     fullName = "Business Source License 1.1";
     url = "https://mariadb.com/bsl11";
     free = false;
+    redistributable = true;
+  };
+
+  caossl = {
+    fullName = "Computer Associates Open Source Licence Version 1.0";
+    url = "http://jxplorer.org/licence.html";
   };
 
   cal10 = {
     fullName = "Cryptographic Autonomy License version 1.0 (CAL-1.0)";
     url = "https://opensource.org/licenses/CAL-1.0";
+  };
+
+  caldera = {
+    spdxId = "Caldera";
+    fullName = "Caldera License";
+    url = "http://www.lemis.com/grog/UNIX/ancient-source-all.pdf";
   };
 
   capec = {
@@ -227,6 +244,12 @@ in mkLicense lset) ({
   cc-by-nc-nd-30 = {
     spdxId = "CC-BY-NC-ND-3.0";
     fullName = "Creative Commons Attribution Non Commercial No Derivative Works 3.0 Unported";
+    free = false;
+  };
+
+  cc-by-nc-nd-40 = {
+    spdxId = "CC-BY-NC-ND-4.0";
+    fullName = "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International";
     free = false;
   };
 
@@ -544,6 +567,12 @@ in mkLicense lset) ({
     fullName = "Imlib2 License";
   };
 
+  info-zip = {
+    spdxId = "Info-ZIP";
+    fullName = "Info-ZIP License";
+    url = "http://www.info-zip.org/pub/infozip/license.html";
+  };
+
   inria-compcert = {
     fullName  = "INRIA Non-Commercial License Agreement for the CompCert verified compiler";
     url       = "https://compcert.org/doc/LICENSE.txt";
@@ -605,6 +634,12 @@ in mkLicense lset) ({
   lal13 = {
     spdxId = "LAL-1.3";
     fullName = "Licence Art Libre 1.3";
+  };
+
+  lens = {
+    fullName = "Lens Terms of Service Agreement";
+    url = "https://k8slens.dev/licenses/tos";
+    free = false;
   };
 
   lgpl2Only = {

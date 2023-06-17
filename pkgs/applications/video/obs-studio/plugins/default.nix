@@ -14,7 +14,11 @@
 
   looking-glass-obs = callPackage ./looking-glass-obs.nix { };
 
+  obs-3d-effect = callPackage ./obs-3d-effect.nix { };
+
   obs-backgroundremoval = callPackage ./obs-backgroundremoval { };
+
+  obs-command-source = callPackage ./obs-command-source.nix { };
 
   obs-gstreamer = callPackage ./obs-gstreamer.nix { };
 
@@ -26,21 +30,31 @@
 
   obs-multi-rtmp = qt6Packages.callPackage ./obs-multi-rtmp { };
 
+  obs-mute-filter = callPackage ./obs-mute-filter.nix { };
+
   obs-ndi = qt6Packages.callPackage ./obs-ndi { };
 
   obs-nvfbc = callPackage ./obs-nvfbc.nix { };
 
   obs-pipewire-audio-capture = callPackage ./obs-pipewire-audio-capture.nix { };
 
+  obs-shaderfilter = qt6Packages.callPackage ./obs-shaderfilter.nix { };
+
+  obs-source-clone = callPackage ./obs-source-clone.nix { };
+
   obs-source-record = callPackage ./obs-source-record.nix { };
 
+  obs-teleport = callPackage ./obs-teleport { };
+
   obs-vaapi = callPackage ./obs-vaapi { };
+
+  obs-vintage-filter = callPackage ./obs-vintage-filter.nix { };
 
   obs-vkcapture = callPackage ./obs-vkcapture.nix {
     obs-vkcapture32 = pkgsi686Linux.obs-studio-plugins.obs-vkcapture;
   };
 
-  obs-websocket = throw "obs-websocket has been removed: Functionality has been integrated into obs-studio itself.";
+  obs-websocket = qt6Packages.callPackage ./obs-websocket.nix { }; # Websocket 4.x compatibility for OBS Studio 28+
 
   wlrobs = callPackage ./wlrobs.nix { };
 }
