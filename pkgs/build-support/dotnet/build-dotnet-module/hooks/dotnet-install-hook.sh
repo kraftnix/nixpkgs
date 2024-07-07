@@ -1,59 +1,86 @@
-# inherit arguments from derivation
-dotnetInstallFlags=( ${dotnetInstallFlags[@]-} )
-
 dotnetInstallHook() {
     echo "Executing dotnetInstallHook"
 
     runHook preInstall
 
-    if [ "${selfContainedBuild-}" ]; then
-        dotnetInstallFlags+=(--runtime "@runtimeId@" "--self-contained")
+    local -r hostRuntimeId=@runtimeId@
+    local -r dotnetInstallPath="${dotnetInstallPath-$out/lib/$pname}"
+    local -r dotnetBuildType="${dotnetBuildType-Release}"
+    local -r dotnetRuntimeId="${dotnetRuntimeId-$hostRuntimeId}"
+
+    if [[ -n $__structuredAttrs ]]; then
+        local dotnetProjectFilesArray=( "${dotnetProjectFiles[@]}" )
+        local dotnetFlagsArray=( "${dotnetFlags[@]}" )
+        local dotnetInstallFlagsArray=( "${dotnetInstallFlags[@]}" )
+        local dotnetPackFlagsArray=( "${dotnetPackFlags[@]}" )
     else
-        dotnetInstallFlags+=("--no-self-contained")
+        local dotnetProjectFilesArray=($dotnetProjectFiles)
+        local dotnetFlagsArray=($dotnetFlags)
+        local dotnetInstallFlagsArray=($dotnetInstallFlags)
+        local dotnetPackFlagsArray=($dotnetPackFlags)
     fi
 
-    if [ "${useAppHost-}" ]; then
-        dotnetInstallFlags+=("-p:UseAppHost=true")
+    if [[ -n ${dotnetSelfContainedBuild-} ]]; then
+        dotnetInstallFlagsArray+=("--self-contained")
+    else
+        dotnetInstallFlagsArray+=("--no-self-contained")
+        # https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trim-self-contained
+        # Trimming is only available for self-contained build, so force disable it here
+        dotnetInstallFlagsArray+=("-p:PublishTrimmed=false")
+    fi
+
+    if [[ -n ${dotnetUseAppHost-} ]]; then
+        dotnetInstallFlagsArray+=("-p:UseAppHost=true")
     fi
 
     dotnetPublish() {
-        local -r project="${1-}"
-        env dotnet publish ${project-} \
+        local -r projectFile="${1-}"
+
+        runtimeIdFlagsArray=()
+        if [[ $projectFile == *.csproj || -n ${dotnetSelfContainedBuild-} ]]; then
+            runtimeIdFlagsArray+=("--runtime" "$dotnetRuntimeId")
+        fi
+
+        dotnet publish ${1+"$projectFile"} \
             -p:ContinuousIntegrationBuild=true \
             -p:Deterministic=true \
-            --output "$out/lib/${pname}" \
-            --configuration "@buildType@" \
+            --output "$dotnetInstallPath" \
+            --configuration "$dotnetBuildType" \
             --no-build \
-            ${dotnetInstallFlags[@]}  \
-            ${dotnetFlags[@]}
+            "${runtimeIdFlagsArray[@]}" \
+            "${dotnetInstallFlagsArray[@]}" \
+            "${dotnetFlagsArray[@]}"
     }
 
     dotnetPack() {
-        local -r project="${1-}"
-         env dotnet pack ${project-} \
-             -p:ContinuousIntegrationBuild=true \
-             -p:Deterministic=true \
-             --output "$out/share" \
-             --configuration "@buildType@" \
-             --no-build \
-             ${dotnetPackFlags[@]}  \
-             ${dotnetFlags[@]}
+        local -r projectFile="${1-}"
+        dotnet pack ${1+"$projectFile"} \
+            -p:ContinuousIntegrationBuild=true \
+            -p:Deterministic=true \
+            --output "$out/share" \
+            --configuration "$dotnetBuildType" \
+            --no-build \
+            --runtime "$dotnetRuntimeId" \
+            "${dotnetPackFlagsArray[@]}" \
+            "${dotnetFlagsArray[@]}"
     }
 
-    if (( "${#projectFile[@]}" == 0 )); then
+    if (( ${#dotnetProjectFilesArray[@]} == 0 )); then
         dotnetPublish
     else
-        for project in ${projectFile[@]}; do
-            dotnetPublish "$project"
+        local projectFile
+        for projectFile in "${dotnetProjectFilesArray[@]}"; do
+            dotnetPublish "$projectFile"
         done
     fi
 
-    if [[ "${packNupkg-}" ]]; then
-        if (( "${#projectFile[@]}" == 0 )); then
+    if [[ -n ${packNupkg-} ]]; then
+        if (( ${#dotnetProjectFilesArray[@]} == 0 )); then
             dotnetPack
         else
-            for project in ${projectFile[@]}; do
-                dotnetPack "$project"
+            local projectFile
+            for projectFile in "${dotnetProjectFilesArray[@]}"; do
+                dotnetPack "$projectFile"
             done
         fi
     fi

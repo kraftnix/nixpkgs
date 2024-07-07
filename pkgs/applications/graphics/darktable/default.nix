@@ -4,13 +4,12 @@
 , libsoup
 , graphicsmagick
 , json-glib
-, wrapGAppsHook
+, wrapGAppsHook3
 , cairo
 , cmake
 , ninja
 , curl
 , perl
-, llvm_13
 , desktop-file-utils
 , exiv2
 , glib
@@ -39,7 +38,7 @@
 , colord-gtk
 , libwebp
 , libsecret
-, gnome
+, adwaita-icon-theme
 , SDL2
 , ocl-icd
 , pcre
@@ -53,20 +52,19 @@
 , libheif
 , libaom
 , portmidi
-, fetchpatch
 , lua
 }:
 
 stdenv.mkDerivation rec {
-  version = "4.2.1";
+  version = "4.8.0";
   pname = "darktable";
 
   src = fetchurl {
     url = "https://github.com/darktable-org/darktable/releases/download/release-${version}/darktable-${version}.tar.xz";
-    sha256 = "603a39c6074291a601f7feb16ebb453fd0c5b02a6f5d3c7ab6db612eadc97bac";
+    sha256 = "sha256-QZhJ6QFScOQHXyNBxrVTLT0czMz6jxlZLLLqOtF/klU=";
   };
 
-  nativeBuildInputs = [ cmake ninja llvm_13 pkg-config intltool perl desktop-file-utils wrapGAppsHook ];
+  nativeBuildInputs = [ cmake ninja llvmPackages.llvm pkg-config intltool perl desktop-file-utils wrapGAppsHook3 ];
 
   buildInputs = [
     cairo
@@ -96,7 +94,7 @@ stdenv.mkDerivation rec {
     libwebp
     libsecret
     SDL2
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
     osm-gps-map
     pcre
     isocodes
@@ -147,6 +145,6 @@ stdenv.mkDerivation rec {
     homepage = "https://www.darktable.org";
     license = licenses.gpl3Plus;
     platforms = platforms.linux ++ platforms.darwin;
-    maintainers = with maintainers; [ goibhniu flosse mrVanDalo paperdigits ];
+    maintainers = with maintainers; [ goibhniu flosse mrVanDalo paperdigits freyacodes ];
   };
 }

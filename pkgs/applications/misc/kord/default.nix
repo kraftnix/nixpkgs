@@ -1,5 +1,8 @@
 { lib
+, stdenv
+, darwin
 , fetchFromGitHub
+, fetchpatch
 , rustPlatform
 , pkg-config
 , alsa-lib
@@ -7,7 +10,7 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "kord";
-  version = "0.5.16";
+  version = "0.6.1";
 
   # kord depends on nightly features
   RUSTC_BOOTSTRAP = 1;
@@ -16,7 +19,7 @@ rustPlatform.buildRustPackage rec {
     owner = "twitchax";
     repo = "kord";
     rev = "v${version}";
-    sha256 = "sha256-gI88fweOT2t+4cj58/mLygtTnue2Ai1QSC5oZf7Xv/g=";
+    sha256 = "sha256-CeMh6yB4fGoxtGLbkQe4OMMvBM0jesyP+8JtU5kCP84=";
   };
 
   cargoLock = {
@@ -26,11 +29,25 @@ rustPlatform.buildRustPackage rec {
     };
   };
 
-  nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ alsa-lib ];
+  patches = [
+    # Fixes build issues due to refactored Rust compiler feature annotations.
+    # Should be removable with the next release after v. 0.6.1.
+    (fetchpatch {
+      name = "fix-rust-features.patch";
+      url = "https://github.com/twitchax/kord/commit/fa9bb979b17d77f54812a915657c3121f76c5d82.patch";
+      hash = "sha256-XQu9P7372J2dHWzvpvbPtALS0Bh8EC+J1EyG3qlak2M=";
+      excludes = [ "Cargo.*" ];
+    })
+  ];
+
+  nativeBuildInputs = lib.optionals stdenv.isLinux [ pkg-config ]
+    ++ lib.optionals stdenv.isDarwin [ rustPlatform.bindgenHook ];
+
+  buildInputs = lib.optionals stdenv.isLinux [ alsa-lib ]
+    ++ lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.AudioUnit ];
 
   meta = with lib; {
-    description = "A music theory binary and library for Rust";
+    description = "Music theory binary and library for Rust";
     homepage = "https://github.com/twitchax/kord";
     maintainers = with maintainers; [ kidsan ];
     license = with licenses; [ mit ];

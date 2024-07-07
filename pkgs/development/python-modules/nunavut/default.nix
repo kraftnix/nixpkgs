@@ -1,22 +1,23 @@
-{ lib
-, buildPythonPackage
-, pythonOlder
-, fetchPypi
-, importlib-resources
-, pydsdl
-, pyyaml
+{
+  lib,
+  buildPythonPackage,
+  pythonOlder,
+  fetchPypi,
+  importlib-resources,
+  pydsdl,
+  pyyaml,
 }:
 
- buildPythonPackage rec {
+buildPythonPackage rec {
   pname = "nunavut";
-  version = "2.1.0";
+  version = "2.3.1";
   format = "setuptools";
 
-  disabled = pythonOlder "3.6";
+  disabled = pythonOlder "3.7";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-L4FbPhhhmgjkL1c3qnSJDK+4NBO2DUqeW6WGt9MBTbg=";
+    hash = "sha256-23C3biUUs10Po5qzn3EFaq4+HeWCXIC6WzxOKy59VgM=";
   };
 
   postPatch = ''
@@ -39,12 +40,11 @@
   # https://github.com/UAVCAN/nunavut/issues/182
   doCheck = false;
 
-  pythonImportsCheck = [
-    "nunavut"
-  ];
+  pythonImportsCheck = [ "nunavut" ];
 
   meta = with lib; {
-    description = "A UAVCAN DSDL template engine";
+    description = "UAVCAN DSDL template engine";
+    mainProgram = "nnvg";
     longDescription = ''
       It exposes a pydsdl abstract syntax tree to Jinja2 templates allowing
       authors to generate code, schemas, metadata, documentation, etc.
@@ -52,6 +52,9 @@
     homepage = "https://nunavut.readthedocs.io/";
     changelog = "https://github.com/OpenCyphal/nunavut/releases/tag/${version}";
     maintainers = with maintainers; [ wucke13 ];
-    license = with licenses; [ bsd3 mit ];
+    license = with licenses; [
+      bsd3
+      mit
+    ];
   };
 }

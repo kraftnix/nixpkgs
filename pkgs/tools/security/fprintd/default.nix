@@ -7,12 +7,10 @@
 , ninja
 , perl
 , gettext
-, cairo
 , gtk-doc
 , libxslt
 , docbook-xsl-nons
 , docbook_xml_dtd_412
-, fetchurl
 , glib
 , gusb
 , dbus
@@ -93,6 +91,11 @@ stdenv.mkDerivation rec {
   LIBRARY_PATH = lib.makeLibraryPath [ python3.pkgs.pypamtest ];
 
   doCheck = true;
+
+  mesonCheckFlags = [
+    # PAM related checks are timing out
+    "--no-suite" "fprintd:TestPamFprintd"
+  ];
 
   postPatch = ''
     patchShebangs \

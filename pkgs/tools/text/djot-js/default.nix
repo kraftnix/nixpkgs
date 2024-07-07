@@ -6,24 +6,20 @@
 
 buildNpmPackage rec {
   pname = "djot-js";
-  version = "0.2.3";
+  version = "0.3.1";
 
   src = fetchFromGitHub {
     owner = "jgm";
     repo = "djot.js";
     rev = "@djot/djot@${version}";
-    hash = "sha256-W/ZQXJXvFEIgj5PeI+jvw4nIkNP4qa1NyQCOv0unIuA=";
+    hash = "sha256-dQfjI+8cKqn4qLT9eUKfCP++BFCWQ/MmrlQNVRNCFuU=";
   };
 
-  npmDepsHash = "sha256-WOsStvm7UC2Jnb803mHoJxDUs1I8dDT7HRPdpIXQne8=";
+  npmDepsHash = "sha256-FjrjwhVv2WRjbEga9w37lwz7KYgTTHGsoqt496Uq/0c=";
 
   nativeBuildInputs = [
     installShellFiles
   ];
-
-  postPatch = ''
-    ln -s ${./package-lock.json} package-lock.json
-  '';
 
   postInstall = ''
     installManPage doc/djot.1

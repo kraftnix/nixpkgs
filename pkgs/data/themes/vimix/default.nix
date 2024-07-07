@@ -24,13 +24,13 @@ lib.checkListOfEnum "${pname}: tweaks" [ "flat" "grey" "mix" "translucent" ] twe
 
 stdenvNoCC.mkDerivation rec {
   inherit pname;
-  version = "2023-01-25";
+  version = "2024-04-20";
 
   src = fetchFromGitHub {
     owner = "vinceliuice";
     repo = pname;
     rev = version;
-    sha256 = "4IJMLSUsZvtPfuMS+NYkKo8K3laec2YJk20d5tL0vKI=";
+    sha256 = "RbAdoix+UWKiLB+04YiPa0UwzO1fFLy56IG1MipmE+E=";
   };
 
   nativeBuildInputs = [

@@ -1,16 +1,16 @@
 { stdenv, lib, fetchFromGitHub, libxslt, libaio, systemd, perl
-, docbook_xsl, coreutils, lsof, rdma-core, makeWrapper, sg3_utils, util-linux
+, docbook_xsl, coreutils, lsof, makeWrapper, sg3_utils
 }:
 
 stdenv.mkDerivation rec {
   pname = "tgt";
-  version = "1.0.86";
+  version = "1.0.92";
 
   src = fetchFromGitHub {
     owner = "fujita";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-xQzTGFptw/L+o8ivXGTxIzVFbAMrsMXvwUjCFS4rhdw=";
+    sha256 = "sha256-Axx9D4BIg68R9bDDNyIGw8n91Jg1YJ/zN1rE6aeMZcs=";
   };
 
   nativeBuildInputs = [ libxslt docbook_xsl makeWrapper ];
@@ -25,6 +25,11 @@ stdenv.mkDerivation rec {
   env.NIX_CFLAGS_COMPILE = toString [
     # Needed with GCC 12
     "-Wno-error=maybe-uninitialized"
+  ];
+
+  hardeningDisable = lib.optionals stdenv.isAarch64 [
+    # error: 'read' writing 1 byte into a region of size 0 overflows the destination
+    "fortify3"
   ];
 
   installFlags = [
@@ -57,7 +62,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "iSCSI Target daemon with RDMA support";
     homepage = "https://github.com/fujita/tgt";
-    license = licenses.gpl2;
+    license = licenses.gpl2Only;
     platforms = platforms.linux;
     maintainers = with maintainers; [ johnazoidberg ];
   };

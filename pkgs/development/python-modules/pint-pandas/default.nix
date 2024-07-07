@@ -1,29 +1,32 @@
-{ stdenv
-, lib
-, buildPythonPackage
-, fetchFromGitHub
-, fetchpatch
-, setuptools
-, pint
-, pandas
-, pytestCheckHook
+{
+  stdenv,
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  setuptools,
+  setuptools-scm,
+  wheel,
+  pint,
+  pandas,
+  pytestCheckHook,
 }:
 
-buildPythonPackage {
+buildPythonPackage rec {
   pname = "pint-pandas";
-  # Latest release contains bugs and failing tests.
-  version = "unstable-2022-11-24";
+  version = "0.4";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "hgrecco";
     repo = "pint-pandas";
-    rev = "c58a7fcf9123eb65f5e78845077b205e20279b9d";
-    hash = "sha256-gMZNJSJxtSZvgU4o71ws5ZA6tgD2M5c5oOrn62DRyMI=";
+    rev = version;
+    hash = "sha256-FuH6wksSCkkL2AyQN46hwTnfeAZFwkWRl6KEEhsxmUY=";
   };
 
   nativeBuildInputs = [
     setuptools
+    setuptools-scm
+    wheel
   ];
 
   propagatedBuildInputs = [
@@ -31,12 +34,10 @@ buildPythonPackage {
     pandas
   ];
 
-  nativeCheckInputs = [
-    pytestCheckHook
-  ];
+  nativeCheckInputs = [ pytestCheckHook ];
 
   meta = with lib; {
-    broken = (stdenv.isLinux && stdenv.isAarch64) || stdenv.isDarwin;
+    broken = stdenv.isDarwin;
     description = "Pandas support for pint";
     license = licenses.bsd3;
     homepage = "https://github.com/hgrecco/pint-pandas";

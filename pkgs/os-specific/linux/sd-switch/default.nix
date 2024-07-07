@@ -1,24 +1,28 @@
-{ lib, fetchFromGitLab, rustPlatform, pkg-config, dbus }:
+{ lib, fetchFromSourcehut, rustPlatform, nix-update-script }:
 
-rustPlatform.buildRustPackage rec {
+let version = "0.5.0";
+in rustPlatform.buildRustPackage {
   pname = "sd-switch";
-  version = "0.2.3";
+  inherit version;
 
-  src = fetchFromGitLab {
-    owner = "rycee";
-    repo = pname;
+  src = fetchFromSourcehut {
+    owner = "~rycee";
+    repo = "sd-switch";
     rev = version;
-    sha256 = "12h2d7v7pdz7b0hrna64561kf35nbpwb2kzxa791xk8raxc2b72k";
+    hash = "sha256-TESS+CwwEugAz+grzndunAoKF9Or/Jl7tftL392fUaM=";
   };
 
-  cargoSha256 = "12ny3cir2nxzrmf4vwq6sgc35dbpq88hav53xqdp44rigdf4vzbs";
+  cargoHash = "sha256-QEnleFwEIoKATupj0sSV/GUztQoozEsb3SEgnfFzAfw=";
 
-  nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ dbus ];
+  passthru = {
+    updateScript = nix-update-script { };
+  };
 
   meta = with lib; {
-    description = "A systemd unit switcher for Home Manager";
-    homepage = "https://gitlab.com/rycee/sd-switch";
+    description = "Systemd unit switcher for Home Manager";
+    mainProgram = "sd-switch";
+    homepage = "https://git.sr.ht/~rycee/sd-switch";
+    changelog = "https://git.sr.ht/~rycee/sd-switch/refs/${version}";
     license = licenses.gpl3Plus;
     maintainers = with maintainers; [ rycee ];
     platforms = platforms.linux;

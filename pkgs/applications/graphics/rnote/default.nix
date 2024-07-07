@@ -2,10 +2,12 @@
 , stdenv
 , fetchFromGitHub
 , alsa-lib
+, appstream
 , appstream-glib
 , cargo
 , cmake
 , desktop-file-utils
+, dos2unix
 , glib
 , gstreamer
 , gtk4
@@ -25,21 +27,20 @@
 
 stdenv.mkDerivation rec {
   pname = "rnote";
-  version = "0.6.0";
+  version = "0.10.2";
 
   src = fetchFromGitHub {
     owner = "flxzt";
     repo = "rnote";
     rev = "v${version}";
-    hash = "sha256-47mWlUXp62fMh5c13enFjmuMxzrmEZlwJFsZhYCB1Vs=";
+    hash = "sha256-SqT8bJfJM+d5fewso3C22M4Qo7wY2g2QmEot/gCpwT4=";
   };
 
   cargoDeps = rustPlatform.importCargoLock {
     lockFile = ./Cargo.lock;
     outputHashes = {
-      "ink-stroke-modeler-rs-0.1.0" = "sha256-DrbFolHGL3ywk2p6Ly3x0vbjqxy1mXld+5CPrNlJfQM=";
-      "librsvg-2.56.0" = "sha256-4poP7xsoylmnKaUWuJ0tnlgEMpw9iJrM3dvt4IaFi7w=";
-      "piet-0.6.2" = "sha256-If0qiZkgXeLvsrECItV9/HmhTk1H52xmVO7cUsD9dcU=";
+      "ink-stroke-modeler-rs-0.1.0" = "sha256-WfZwezohm8+ZXiKZlssTX+b/Izk1M4jFwxQejeTfc6M=";
+      "piet-0.6.2" = "sha256-3juXzuKwoLuxia6MoVwbcBJ3jXBQ9QRNVoxo3yFp2Iw=";
     };
   };
 
@@ -47,6 +48,7 @@ stdenv.mkDerivation rec {
     appstream-glib # For appstream-util
     cmake
     desktop-file-utils # For update-desktop-database
+    dos2unix
     meson
     ninja
     pkg-config
@@ -66,6 +68,7 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
+    appstream
     glib
     gstreamer
     gtk4
@@ -79,10 +82,8 @@ stdenv.mkDerivation rec {
   ];
 
   postPatch = ''
-    pushd build-aux
-    chmod +x cargo_build.py meson_post_install.py
-    patchShebangs cargo_build.py meson_post_install.py
-    popd
+    chmod +x build-aux/*.py
+    patchShebangs build-aux
   '';
 
   meta = with lib; {
@@ -90,7 +91,9 @@ stdenv.mkDerivation rec {
     changelog = "https://github.com/flxzt/rnote/releases/tag/${src.rev}";
     description = "Simple drawing application to create handwritten notes";
     license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ dotlambda yrd ];
+    maintainers = with maintainers; [ dotlambda gepbird yrd ];
     platforms = platforms.unix;
+    # compiler error since 2023-11-17
+    broken = stdenv.isDarwin;
   };
 }

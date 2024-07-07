@@ -8,7 +8,7 @@
 let
   inherit (rustPlatform) buildRustPackage bindgenHook;
 
-  version = "0.2.7";
+  version = "0.3.2";
 in
 buildRustPackage {
   pname = "figma-agent";
@@ -18,10 +18,10 @@ buildRustPackage {
     owner = "neetly";
     repo = "figma-agent-linux";
     rev = version;
-    sha256 = "sha256-Cq1hWNwJLBY9Bb41WFJxnr9fcygFZ8eNsn5cPXmGTyw=";
+    sha256 = "sha256-iXLQOc8gomOik+HIIoviw19II5MD6FM0W5DT3aqtIcM=";
   };
 
-  cargoSha256 = "sha256-Gc94Uk/Ikxjnb541flQL7AeblgU/yS6zQ/187ZGRYco=";
+  cargoHash = "sha256-ulYDKMMtKfBYur34CVhac4uaU0kfdkeBCCP/heuUZek=";
 
   nativeBuildInputs = [
     pkg-config
@@ -40,5 +40,6 @@ buildRustPackage {
     description = "Figma Agent for Linux (a.k.a. Font Helper)";
     license = licenses.mit;
     maintainers = with maintainers; [ ercao ];
+    mainProgram = "figma-agent";
   };
 }

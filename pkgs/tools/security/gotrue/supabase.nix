@@ -7,16 +7,16 @@
 
 buildGoModule rec {
   pname = "gotrue";
-  version = "2.70.0";
+  version = "2.105.0";
 
   src = fetchFromGitHub {
     owner = "supabase";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-1xOHf5hu0h+Ak4zALmsu1AoQMzeyWVE0l6JH77sZnfo=";
+    hash = "sha256-6tFXuVBd7UptoVMSse1Pk9ok6XyGL994pfFkFTyc5I0=";
   };
 
-  vendorHash = "sha256-ZWY+l8qrtYNul2xAtg9fSmMIS7Z1TlKDTKotwf/fN/4=";
+  vendorHash = "sha256-cwTwze8WuhL5exaY5HJYDgcxNB9O1QuFpJgZmj6R838=";
 
   ldflags = [
     "-s"
@@ -35,7 +35,8 @@ buildGoModule rec {
 
   meta = with lib; {
     homepage = "https://github.com/supabase/gotrue";
-    description = "A JWT based API for managing users and issuing JWT tokens";
+    description = "JWT based API for managing users and issuing JWT tokens";
+    mainProgram = "gotrue";
     changelog = "https://github.com/supabase/gotrue/releases/tag/v${version}";
     license = licenses.mit;
     maintainers = with maintainers; [ urandom ];

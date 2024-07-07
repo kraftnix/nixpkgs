@@ -8,6 +8,7 @@
 , meson
 , ninja
 , python3
+, getent
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -34,6 +35,7 @@ stdenv.mkDerivation (finalAttrs: {
     meson
     ninja
     python3
+    getent
   ];
 
   preConfigure = ''
@@ -45,7 +47,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   meta = {
     homepage = "https://sr.ht/~emersion/basu";
-    description = "The sd-bus library, extracted from systemd";
+    description = "Sd-bus library, extracted from systemd";
+    mainProgram = "basuctl";
     license = lib.licenses.lgpl21Only;
     maintainers = with lib.maintainers; [ AndersonTorres ];
     platforms = lib.platforms.linux;

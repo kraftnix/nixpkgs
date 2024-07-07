@@ -10,7 +10,7 @@
 
 stdenv.mkDerivation rec {
   pname = "libsegfault";
-  version = "unstable-2022-11-13";
+  version = "0-unstable-2022-11-13";
 
   src = fetchFromGitHub {
     owner = "jonathanpoelen";
@@ -18,6 +18,8 @@ stdenv.mkDerivation rec {
     rev = "8bca5964613695bf829c96f7a3a14dbd8304fe1f";
     sha256 = "vKtY6ZEkyK2K+BzJCSo30f9MpERpPlUnarFIlvJ1Giw=";
   };
+
+  env.NIX_CFLAGS_COMPILE = lib.optionalString (stdenv.isDarwin) "-DBOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED=1";
 
   nativeBuildInputs = [
     meson

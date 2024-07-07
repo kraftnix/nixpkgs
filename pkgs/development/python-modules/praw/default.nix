@@ -1,21 +1,22 @@
-{ lib
-, betamax
-, betamax-matchers
-, betamax-serializers
-, buildPythonPackage
-, fetchFromGitHub
-, mock
-, prawcore
-, pytestCheckHook
-, pythonOlder
-, requests-toolbelt
-, update_checker
-, websocket-client
+{
+  lib,
+  betamax,
+  betamax-matchers,
+  betamax-serializers,
+  buildPythonPackage,
+  fetchFromGitHub,
+  mock,
+  prawcore,
+  pytestCheckHook,
+  pythonOlder,
+  requests-toolbelt,
+  update-checker,
+  websocket-client,
 }:
 
 buildPythonPackage rec {
   pname = "praw";
-  version = "7.7.0";
+  version = "7.7.1";
   format = "setuptools";
 
   disabled = pythonOlder "3.7";
@@ -24,13 +25,13 @@ buildPythonPackage rec {
     owner = "praw-dev";
     repo = pname;
     rev = "refs/tags/v${version}";
-    hash = "sha256-reJW1M1yDSQ1SvZJeOc0jwHj6ydl1AmMl5VZqRHxXZA=";
+    hash = "sha256-L7wTHD/ypXVc8GMfl9u16VNb9caLJoXpaMEIzaVVUgo=";
   };
 
   propagatedBuildInputs = [
     mock
     prawcore
-    update_checker
+    update-checker
     websocket-client
   ];
 
@@ -42,9 +43,12 @@ buildPythonPackage rec {
     requests-toolbelt
   ];
 
-  pythonImportsCheck = [
-    "praw"
+  disabledTestPaths = [
+    # tests requiring network
+    "tests/integration"
   ];
+
+  pythonImportsCheck = [ "praw" ];
 
   meta = with lib; {
     description = "Python Reddit API wrapper";

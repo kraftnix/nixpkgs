@@ -1,9 +1,9 @@
 { lib
 , stdenv
-, fetchurl
-, fetchpatch
+, fetchFromGitHub
 , pkg-config
 , udev
+, freebsd
 , runtimeShellPackage
 , runtimeShell
 , nixosTests
@@ -12,33 +12,28 @@
 
 stdenv.mkDerivation rec {
   pname = "dhcpcd";
-  version = "9.4.1";
+  version = "10.0.6";
 
-  src = fetchurl {
-    url = "mirror://roy/${pname}/${pname}-${version}.tar.xz";
-    sha256 = "sha256-gZNXY07+0epc9E7AGyTT0/iFL+yLQkmSXcxWZ8VON2w=";
+  src = fetchFromGitHub {
+    owner = "NetworkConfiguration";
+    repo = "dhcpcd";
+    rev = "v${version}";
+    sha256 = "sha256-tNC5XCA8dShaTIff15mQz8v+YK9sZkRNLCX5qnlpxx4=";
   };
-
-  patches = [
-    # dhcpcd with privsep SIGSYS's on dhcpcd -U
-    # https://github.com/NetworkConfiguration/dhcpcd/issues/147
-    (fetchpatch {
-      url = "https://github.com/NetworkConfiguration/dhcpcd/commit/38befd4e867583002b96ec39df733585d74c4ff5.patch";
-      hash = "sha256-nS2zmLuQBYhLfoPp0DOwxF803Hh32EE4OUKGBTTukE0=";
-    })
-  ];
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [
-    udev
     runtimeShellPackage # So patchShebangs finds a bash suitable for the installed scripts
+  ] ++ lib.optionals stdenv.isLinux [
+    udev
+  ] ++ lib.optionals stdenv.isFreeBSD [
+    freebsd.libcapsicum
+    freebsd.libcasper
   ];
 
-  prePatch = ''
+  postPatch = ''
     substituteInPlace hooks/dhcpcd-run-hooks.in --replace /bin/sh ${runtimeShell}
   '';
-
-  preConfigure = "patchShebangs ./configure";
 
   configureFlags = [
     "--sysconfdir=/etc"
@@ -62,7 +57,7 @@ stdenv.mkDerivation rec {
   installFlags = [ "DBDIR=$(TMPDIR)/db" "SYSCONFDIR=${placeholder "out"}/etc" ];
 
   # Check that the udev plugin got built.
-  postInstall = lib.optionalString (udev != null) "[ -e ${placeholder "out"}/lib/dhcpcd/dev/udev.so ]";
+  postInstall = lib.optionalString (udev != null && stdenv.isLinux) "[ -e ${placeholder "out"}/lib/dhcpcd/dev/udev.so ]";
 
   passthru = {
     inherit enablePrivSep;
@@ -70,10 +65,11 @@ stdenv.mkDerivation rec {
   };
 
   meta = with lib; {
-    description = "A client for the Dynamic Host Configuration Protocol (DHCP)";
+    description = "Client for the Dynamic Host Configuration Protocol (DHCP)";
     homepage = "https://roy.marples.name/projects/dhcpcd";
-    platforms = platforms.linux;
+    platforms = platforms.linux ++ platforms.freebsd;
     license = licenses.bsd2;
     maintainers = with maintainers; [ eelco ];
+    mainProgram = "dhcpcd";
   };
 }

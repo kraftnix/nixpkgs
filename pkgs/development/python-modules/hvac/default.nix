@@ -1,28 +1,30 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, pyhcl
-, requests
-, six
-, pythonOlder
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  pyhcl,
+  requests,
+  poetry-core,
+  pythonOlder,
 }:
 
 buildPythonPackage rec {
   pname = "hvac";
-  version = "1.1.0";
-  format = "setuptools";
+  version = "2.2.0";
+  format = "pyproject";
 
-  disabled = pythonOlder "3.6";
+  disabled = pythonOlder "3.8";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-B53KWIVt7mZG7VovIoOAnBbS3u3eHp6WFbKRAySkuWk=";
+    hash = "sha256-5LAkjFZyy5pvWXTnyPUnGgnGxmPL+KsRczoifz0tssI=";
   };
+
+  nativeBuildInputs = [ poetry-core ];
 
   propagatedBuildInputs = [
     pyhcl
     requests
-    six
   ];
 
   # Requires running a Vault server

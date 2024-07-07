@@ -2,20 +2,20 @@
 
 buildGoModule rec {
   pname = "mackerel-agent";
-  version = "0.76.0";
+  version = "0.82.0";
 
   src = fetchFromGitHub {
     owner = "mackerelio";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-IfrJd7EQ9t/whypxyW7uwUQ5O1pcqDgRf1AbG6d9LPw=";
+    sha256 = "sha256-zkwYYkI7oeOdJH/K9E8/ZkTOexEKyP1I2kOJlt7PcK4=";
   };
 
   nativeBuildInputs = [ makeWrapper ];
   nativeCheckInputs = lib.optionals (!stdenv.isDarwin) [ nettools ];
   buildInputs = lib.optionals (!stdenv.isDarwin) [ iproute2 ];
 
-  vendorHash = "sha256-Ow1Ho6+VMvb0hKsAAd8nieFyVqDDX2prHDIkTuy1je8=";
+  vendorHash = "sha256-JIqQXS2iw3opeotpfqC16w7hdu+7XjxhIyVj2M+98ec=";
 
   subPackages = [ "." ];
 
@@ -33,6 +33,7 @@ buildGoModule rec {
 
   meta = with lib; {
     description = "System monitoring service for mackerel.io";
+    mainProgram = "mackerel-agent";
     homepage = "https://github.com/mackerelio/mackerel-agent";
     license = licenses.asl20;
     maintainers = with maintainers; [ midchildan ];

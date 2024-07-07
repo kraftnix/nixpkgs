@@ -9,16 +9,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "cargo-guppy";
-  version = "unstable-2023-04-15";
+  version = "unstable-2023-10-04";
 
   src = fetchFromGitHub {
     owner = "guppy-rs";
     repo = "guppy";
-    rev = "e93f51ca56dc9cc310004931a906b6b486b93058";
-    sha256 = "sha256-kg1iWku+zAXG9cCYCD4rqKzKNtDt0hMCnE5QyhJpLq8=";
+    rev = "837d0ae762b9ae79cc8ca5d629842e5ca34293b4";
+    sha256 = "sha256-LWU1yAD/f9w5m522vcKP9D2JusGkwzvfGSGstvFGUpk=";
   };
 
-  cargoSha256 = "sha256-XKAre9L2mk31CgXbP53zR8mr92Jh9qVSx+sMkhqq/M4=";
+  cargoSha256 = "sha256-IyU5fJSFzef8P5v8ILufGcTP3+5Gm0PH4Cox2G5saHw=";
 
   nativeBuildInputs = [ pkg-config ];
 
@@ -30,7 +30,8 @@ rustPlatform.buildRustPackage rec {
   cargoTestFlags = [ "-p" "cargo-guppy" ];
 
   meta = with lib; {
-    description = "A command-line frontend for guppy";
+    description = "Command-line frontend for guppy";
+    mainProgram = "cargo-guppy";
     homepage = "https://github.com/guppy-rs/guppy/tree/main/cargo-guppy";
     license = with licenses; [ mit /* or */ asl20 ];
     maintainers = with maintainers; [ figsoda ];

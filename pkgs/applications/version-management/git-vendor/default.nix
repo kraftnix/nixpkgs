@@ -48,7 +48,7 @@ in stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "A git command for managing vendored dependencies";
+    description = "Git command for managing vendored dependencies";
     longDescription = ''
       git-vendor is a wrapper around git-subtree commands for checking out and updating vendored dependencies.
 
@@ -59,8 +59,9 @@ in stdenv.mkDerivation {
     '';
     homepage = "https://github.com/brettlangdon/git-vendor";
     license = lib.licenses.mit;
-    maintainers = [ lib.maintainers.Profpatsch ];
+    maintainers = [ ];
     platforms = lib.platforms.all;
+    mainProgram = "git-vendor";
   };
 
 }

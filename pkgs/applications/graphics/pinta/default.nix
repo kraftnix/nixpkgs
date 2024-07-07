@@ -5,7 +5,7 @@
 , glibcLocales
 , gtk3
 , intltool
-, wrapGAppsHook
+, wrapGAppsHook3
 }:
 
 buildDotnetModule rec {
@@ -14,7 +14,7 @@ buildDotnetModule rec {
 
   nativeBuildInputs = [
     intltool
-    wrapGAppsHook
+    wrapGAppsHook3
   ];
 
   dotnet-sdk = dotnetCorePackages.sdk_7_0;
@@ -26,7 +26,6 @@ buildDotnetModule rec {
   # How-to update deps:
   # $ nix-build -A pinta.fetch-deps
   # $ ./result
-  # $ cp /tmp/Pinta-deps.nix ./pkgs/applications/graphics/pinta/deps.nix
   # TODO: create update script
   nugetDeps = ./deps.nix;
 

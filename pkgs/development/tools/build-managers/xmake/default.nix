@@ -12,11 +12,11 @@
 
 stdenv.mkDerivation rec {
   pname = "xmake";
-  version = "2.7.9";
+  version = "2.9.3";
 
   src = fetchurl {
     url = "https://github.com/xmake-io/xmake/releases/download/v${version}/xmake-v${version}.tar.gz";
-    hash = "sha256-m0LYY0gz9IhbBbiUKd1gBE3KmSMvYJYyC42Ff7M9Ku8=";
+    hash = "sha256-gqm7aWGjm+qPKAwUE9VIVEI/j5Li/0PuHA/q16O17dg=";
   };
 
   nativeBuildInputs = [
@@ -33,10 +33,12 @@ stdenv.mkDerivation rec {
     xmake-core-sv
   ];
 
+  strictDeps = true;
+
   configureFlags = [ "--external=y" ];
 
   meta = with lib; {
-    description = "A cross-platform build utility based on Lua";
+    description = "Cross-platform build utility based on Lua";
     homepage = "https://xmake.io";
     license = licenses.asl20;
     platforms = lua.meta.platforms;

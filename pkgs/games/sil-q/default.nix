@@ -23,7 +23,7 @@ in stdenv.mkDerivation rec {
   buildInputs = [ ncurses libX11 ];
 
   # Makefile(s) and config are not top-level
-  sourceRoot = "source/src";
+  sourceRoot = "${src.name}/src";
 
   postPatch = ''
     # allow usage of ANGBAND_PATH
@@ -55,7 +55,8 @@ in stdenv.mkDerivation rec {
   };
 
   meta = {
-    description = "A roguelike game set in the First Age of Middle-earth";
+    description = "Roguelike game set in the First Age of Middle-earth";
+    mainProgram = "sil-q";
     longDescription = ''
       A game of adventure set in the First Age of Middle-earth, when the world still
       rang with Elven song and gleamed with Dwarven mail.

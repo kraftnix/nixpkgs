@@ -51,7 +51,7 @@ let
         default = {};
         example = { Parameters = "/bin/sh"; };
         type = types.addCheck (types.attrsOf unitOption) checkExec;
-        description = lib.mdDoc ''
+        description = ''
           Each attribute in this set specifies an option in the
           `[Exec]` section of this unit. See
           {manpage}`systemd.nspawn(5)` for details.
@@ -62,7 +62,7 @@ let
         default = {};
         example = { Bind = [ "/home/alice" ]; };
         type = types.addCheck (types.attrsOf unitOption) checkFiles;
-        description = lib.mdDoc ''
+        description = ''
           Each attribute in this set specifies an option in the
           `[Files]` section of this unit. See
           {manpage}`systemd.nspawn(5)` for details.
@@ -73,7 +73,7 @@ let
         default = {};
         example = { Private = false; };
         type = types.addCheck (types.attrsOf unitOption) checkNetwork;
-        description = lib.mdDoc ''
+        description = ''
           Each attribute in this set specifies an option in the
           `[Network]` section of this unit. See
           {manpage}`systemd.nspawn(5)` for details.
@@ -138,7 +138,7 @@ in {
     systemd.nspawn = mkOption {
       default = {};
       type = with types; attrsOf (submodule instanceOptions);
-      description = lib.mdDoc "Definition of systemd-nspawn configurations.";
+      description = "Definition of systemd-nspawn configurations.";
     };
 
   };

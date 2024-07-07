@@ -107,6 +107,7 @@ if [[ ${provider} =~ ^[^/]+/[^/]+$ ]]; then
   # create empty stings so nix-prefetch works
   update_attr hash ""
   update_attr vendorHash ""
+  update_attr spdx ""
 fi
 
 homepage="$(read_attr homepage)"
@@ -150,7 +151,7 @@ update_attr hash "${hash}"
 old_vendor_hash="$(read_attr vendorHash)"
 if [[ ${old_vendor_hash} != null ]]; then
   echo_provider "calculating vendorHash"
-  vendorHash=$(generate_hash go-modules)
+  vendorHash=$(generate_hash goModules)
   update_attr vendorHash "${vendorHash}"
 fi
 

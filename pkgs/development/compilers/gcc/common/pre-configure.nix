@@ -1,11 +1,16 @@
-{ lib, version, buildPlatform, hostPlatform, targetPlatform
+{ lib
+, stdenv
+, version, buildPlatform, hostPlatform, targetPlatform
 , gnat-bootstrap ? null
 , langAda ? false
+, langFortran
 , langJava ? false
 , langJit ? false
 , langGo
-, crossStageStatic
+, withoutTargetLibc
+, enableShared
 , enableMultilib
+, pkgsBuildTarget
 }:
 
 assert langJava -> lib.versionOlder version "7";
@@ -24,29 +29,13 @@ in lib.optionalString (hostPlatform.isSunOS && hostPlatform.is64bit) ''
   export PATH=${gnat-bootstrap}/bin:$PATH
 ''
 
-# On x86_64-darwin, the gnat-bootstrap bootstrap compiler that we need to build a
-# native GCC with Ada support emits assembly that is accepted by the Clang
-# integrated assembler, but not by the GNU assembler in cctools-port that Nix
-# usually in the x86_64-darwin stdenv.  In particular, x86_64-darwin gnat-bootstrap
-# emits MOVQ as the mnemonic for quadword interunit moves, such as between XMM
-# and general registers (e.g "movq %xmm0, %rbp"); the cctools-port assembler,
-# however, only recognises MOVD for such moves.
-#
-# Therefore, for native x86_64-darwin builds that support Ada, we have to use
-# the Clang integrated assembler to build (at least stage 1 of) GCC, but have to
-# target GCC at the cctools-port GNU assembler.  In the wrapped x86_64-darwin
-# gnat-bootstrap, the former is provided as `as`, while the latter is provided as
-# `gas`.
-#
-+ lib.optionalString (
-    langAda
-    && buildPlatform == hostPlatform
-    && hostPlatform == targetPlatform
-    && targetPlatform.isx86_64
-    && targetPlatform.isDarwin
-  ) ''
-  export AS_FOR_BUILD=${gnat-bootstrap}/bin/as
-  export AS_FOR_TARGET=${gnat-bootstrap}/bin/gas
+# For a cross-built native compiler, i.e. build!=(host==target), the
+# bundled libgfortran needs a gfortran which can run on the
+# buildPlatform and emit code for the targetPlatform.  The compiler
+# which is built alongside gfortran in this configuration doesn't
+# meet that need: it runs on the hostPlatform.
++ lib.optionalString (langFortran && (with stdenv; buildPlatform != hostPlatform && hostPlatform == targetPlatform)) ''
+  export GFORTRAN_FOR_TARGET=${pkgsBuildTarget.gfortran}/bin/${stdenv.targetPlatform.config}-gfortran
 ''
 
 # NOTE 2020/3/18: This environment variable prevents configure scripts from
@@ -102,23 +91,14 @@ in lib.optionalString (hostPlatform.isSunOS && hostPlatform.is64bit) ''
 
 # Normally (for host != target case) --without-headers automatically
 # enables 'inhibit_libc=true' in gcc's gcc/configure.ac. But case of
-# gcc->clang "cross"-compilation manages to evade it: there
+# gcc->clang or dynamic->static "cross"-compilation manages to evade it: there
 # hostPlatform != targetPlatform, hostPlatform.config == targetPlatform.config.
 # We explicitly inhibit libc headers use in this case as well.
-+ lib.optionalString (targetPlatform != hostPlatform && crossStageStatic) ''
++ lib.optionalString (targetPlatform != hostPlatform &&
+                      withoutTargetLibc &&
+                      targetPlatform.config == hostPlatform.config) ''
   export inhibit_libc=true
 ''
 
-+ lib.optionalString (!enableMultilib && hostPlatform.is64bit && !hostPlatform.isMips64n32) ''
-  export linkLib64toLib=1
-''
-
-# On mips platforms, gcc follows the IRIX naming convention:
-#
-#  $PREFIX/lib   = mips32
-#  $PREFIX/lib32 = mips64n32
-#  $PREFIX/lib64 = mips64
-#
-+ lib.optionalString (!enableMultilib && targetPlatform.isMips64n32) ''
-  export linkLib32toLib=1
-''
++ lib.optionalString (targetPlatform != hostPlatform && withoutTargetLibc && enableShared)
+  (import ./libgcc-buildstuff.nix { inherit lib stdenv; })

@@ -2,25 +2,23 @@
 , lib
 , stdenvNoCC
 , python3
-, sassc
-, sass
+, python3Packages
 }:
 
 stdenvNoCC.mkDerivation rec {
   pname = "mint-themes";
-  version = "2.1.2";
+  version = "2.1.8";
 
   src = fetchFromGitHub {
     owner = "linuxmint";
     repo = pname;
     rev = version;
-    hash = "sha256-Y+KmSKuREn2E3FySsScjL+oSpSFnyEqhoXQfU++86JY=";
+    hash = "sha256-mkcIhZRaOUom1Rurz/IO646FSF50efLN6xfesPdyVHc=";
   };
 
   nativeBuildInputs = [
     python3
-    sassc
-    sass
+    python3Packages.libsass
   ];
 
   preBuild = ''

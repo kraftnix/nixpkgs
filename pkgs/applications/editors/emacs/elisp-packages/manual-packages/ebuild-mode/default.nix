@@ -1,17 +1,32 @@
-{ lib, trivialBuild, fetchurl }:
+{
+  lib,
+  melpaBuild,
+  fetchzip,
+  writeText,
+}:
 
-trivialBuild rec {
+melpaBuild rec {
   pname = "ebuild-mode";
-  version = "1.63";
+  version = "1.71";
 
-  src = fetchurl {
-    url = "https://dev.gentoo.org/~ulm/emacs/${pname}-${version}.tar.xz";
-    sha256 = "sha256-Ar11zz0IVMu0g9+PN9dXvj8yeKnUGi8M+CTJfGP3bd4=";
+  src = fetchzip {
+    url = "https://gitweb.gentoo.org/proj/ebuild-mode.git/snapshot/ebuild-mode-${version}.tar.bz2";
+    hash = "sha256-HvaiH3I6hJMb1XFFf8FOw22X+47UayCIWAGuXAVP/ls=";
   };
 
-  meta = with lib; {
+  # not used but needs to be set; why?
+  commit = "a643f177b58aa8869f2f24814e990320aa4f0f96";
+
+  recipe = writeText "recipe" ''
+    (ebuild-mode
+     :url "https://gitweb.gentoo.org/proj/ebuild-mode.git"
+     :fetcher git)
+  '';
+
+  meta = {
+    homepage = "https://gitweb.gentoo.org/proj/ebuild-mode.git/";
     description = "Major modes for Gentoo package files";
-    license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ qyliss ];
+    license = lib.licenses.gpl2Plus;
+    maintainers = with lib.maintainers; [ qyliss ];
   };
 }

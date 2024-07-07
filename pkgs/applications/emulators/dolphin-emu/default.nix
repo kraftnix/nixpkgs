@@ -11,7 +11,8 @@
 , curl
 , enet
 , ffmpeg
-, fmt_8
+, fmt_10
+, gtest
 , hidapi
 , libevdev
 , libGL
@@ -22,15 +23,17 @@
 , libXdmcp
 , libXext
 , libXrandr
+, lz4
+, lzo
 , mbedtls_2
-, mgba
 , miniupnpc
 , minizip-ng
 , openal
 , pugixml
 , qtbase
+, qtsvg
+, SDL2
 , sfml
-, soundtouch
 , udev
 , vulkan-loader
 , xxHash
@@ -55,15 +58,22 @@
 
 stdenv.mkDerivation rec {
   pname = "dolphin-emu";
-  version = "5.0-19368";
+  version = "5.0-21460";
 
   src = fetchFromGitHub {
     owner = "dolphin-emu";
     repo = "dolphin";
-    rev = "dadbeb4bae7e7fa23af2b46e0add4143094dc107";
-    sha256 = "sha256-XLtFn2liONPizvrKyySZx0mY7qC2fpwhAWaRZLlEzh8=";
+    rev = "a9544510468740b77cf06ef28daaa65fe247fd32";
+    hash = "sha256-mhD7Uaqi8GzHdR7Y81TspvCnrZH2evWuWFgXMQ2c8g0=";
     fetchSubmodules = true;
   };
+
+  patches = [
+    # TODO: Remove when merged https://github.com/dolphin-emu/dolphin/pull/12736
+    ./find-minizip-ng.patch
+  ];
+
+  strictDeps = true;
 
   nativeBuildInputs = [
     cmake
@@ -77,31 +87,37 @@ stdenv.mkDerivation rec {
     curl
     enet
     ffmpeg
-    fmt_8
+    fmt_10
+    gtest
     hidapi
-    libGL
     libiconv
     libpulseaudio
     libspng
     libusb1
     libXdmcp
+    lz4
+    lzo
     mbedtls_2
     miniupnpc
     minizip-ng
     openal
     pugixml
     qtbase
+    qtsvg
+    SDL2
     sfml
-    soundtouch
     xxHash
     xz
+    # Causes linker errors with minizip-ng, prefer vendored. Possible reason why: https://github.com/dolphin-emu/dolphin/pull/12070#issuecomment-1677311838
+    #zlib-ng
   ] ++ lib.optionals stdenv.isLinux [
     alsa-lib
     bluez
     libevdev
+    libGL
     libXext
     libXrandr
-    # FIXME: Remove comment on next mgba version
+    # FIXME: Vendored version is newer than mgba's stable release, remove the comment on next mgba's version
     #mgba # Derivation doesn't support Darwin
     udev
     vulkan-loader
@@ -117,13 +133,13 @@ stdenv.mkDerivation rec {
 
   cmakeFlags = [
     "-DDISTRIBUTOR=NixOS"
-    "-DUSE_SHARED_ENET=ON"
     "-DDOLPHIN_WC_REVISION=${src.rev}"
     "-DDOLPHIN_WC_DESCRIBE=${version}"
     "-DDOLPHIN_WC_BRANCH=master"
   ] ++ lib.optionals stdenv.isDarwin [
     "-DOSX_USE_DEFAULT_SEARCH_PATH=True"
     "-DUSE_BUNDLED_MOLTENVK=OFF"
+    "-DMACOS_CODE_SIGNING=OFF"
     # Bundles the application folder into a standalone executable, so we cannot devendor libraries
     "-DSKIP_POSTPROCESS_BUNDLE=ON"
     # Needs xcode so compilation fails with it enabled. We would want the version to be fixed anyways.
@@ -138,13 +154,6 @@ stdenv.mkDerivation rec {
     "--set QT_QPA_PLATFORM xcb"
   ];
 
-  # Use nix-provided libraries instead of submodules
-  postPatch = lib.optionalString stdenv.isDarwin ''
-    substituteInPlace CMakeLists.txt \
-      --replace "if(NOT APPLE)" "if(true)" \
-      --replace "if(LIBUSB_FOUND AND NOT APPLE)" "if(LIBUSB_FOUND)"
-  '';
-
   postInstall = lib.optionalString stdenv.hostPlatform.isLinux ''
     install -D $src/Data/51-usb-device.rules $out/etc/udev/rules.d/51-usb-device.rules
   '' + lib.optionalString stdenv.hostPlatform.isDarwin ''
@@ -158,6 +167,7 @@ stdenv.mkDerivation rec {
     tests.version = testers.testVersion {
       package = dolphin-emu;
       command = "dolphin-emu-nogui --version";
+      version = if stdenv.hostPlatform.isDarwin then "Dolphin 5.0" else version;
     };
 
     updateScript = writeShellScript "dolphin-update-script" ''
@@ -178,13 +188,6 @@ stdenv.mkDerivation rec {
     branch = "master";
     license = licenses.gpl2Plus;
     platforms = platforms.unix;
-    maintainers = with maintainers; [
-      MP2E
-      ashkitten
-      xfix
-      ivar
-    ];
-    # Requires both LLVM and SDK bump
-    broken = stdenv.isDarwin && stdenv.isx86_64;
+    maintainers = with maintainers; [ ];
   };
 }

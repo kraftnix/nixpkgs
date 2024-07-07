@@ -18,6 +18,12 @@ stdenv.mkDerivation rec {
   buildPhase = ''
     runHook preBuild
     patchShebangs ./Scripts
+
+    # Deskew insists on using dlopen to load libtiff, we insist it links against it.
+    sed -i -e 's/{$DEFINE DYNAMIC_DLL_LOADING}//' Imaging/LibTiff/LibTiffDynLib.pas
+    sed -i -e 's/if LibTiffDynLib\.LoadTiffLibrary then//' Imaging/LibTiff/ImagingTiffLib.pas
+    # Make sure libtiff is in the RPATH, so that Nix can find and track the runtime dependency
+    export NIX_LDFLAGS="$NIX_LDFLAGS -rpath ${lib.getLib libtiff}/lib"
     pushd Scripts && ./compile.sh && popd
     runHook postBuild
   '';
@@ -29,11 +35,12 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "A command line tool for deskewing scanned text documents";
+    description = "Command line tool for deskewing scanned text documents";
     homepage = "https://galfar.vevb.net/deskew";
     license = with licenses; [ mit mpl11 ];
     maintainers = with maintainers; [ryantm];
     platforms = platforms.all;
+    mainProgram = "deskew";
   };
 
 }

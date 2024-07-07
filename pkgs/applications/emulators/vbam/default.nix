@@ -2,7 +2,6 @@
 , cairo
 , cmake
 , fetchFromGitHub
-, fetchpatch
 , ffmpeg
 , gettext
 , wxGTK32
@@ -14,19 +13,21 @@
 , sfml
 , zip
 , zlib
+, wrapGAppsHook3
+, gsettings-desktop-schemas
 }:
 
 stdenv.mkDerivation rec {
   pname = "visualboyadvance-m";
-  version = "2.1.5";
+  version = "2.1.9";
   src = fetchFromGitHub {
     owner = "visualboyadvance-m";
     repo = "visualboyadvance-m";
     rev = "v${version}";
-    sha256 = "1sc3gdn7dqkipjsvlzchgd98mia9ic11169dw8v341vr9ppb1b6m";
+    sha256 = "sha256-t5/CM5KXDG0OCByu7mUyuC5NkYmB3BFmEHHgnMY05nE=";
   };
 
-  nativeBuildInputs = [ cmake pkg-config ];
+  nativeBuildInputs = [ cmake pkg-config wrapGAppsHook3 ];
 
   buildInputs = [
     cairo
@@ -41,17 +42,10 @@ stdenv.mkDerivation rec {
     zlib
     wxGTK32
     gtk3
-  ];
-
-  patches = [
-    (fetchpatch {
-      url = "https://github.com/visualboyadvance-m/visualboyadvance-m/commit/1d7e8ae4edc53a3380dfea88329b8b8337db1c52.patch";
-      sha256 = "sha256-SV1waz2JSKiM6itwkqwlE3aOZCcOl8iyBr06tyYlefo=";
-    })
+    gsettings-desktop-schemas
   ];
 
   cmakeFlags = [
-    "-DCMAKE_BUILD_TYPE='Release'"
     "-DENABLE_FFMPEG='true'"
     "-DENABLE_LINK='true'"
     "-DSYSCONFDIR=etc"
@@ -59,10 +53,11 @@ stdenv.mkDerivation rec {
   ];
 
   meta =  with lib; {
-    description = "A merge of the original Visual Boy Advance forks";
+    description = "Merge of the original Visual Boy Advance forks";
     license = licenses.gpl2;
     maintainers = with maintainers; [ lassulus netali ];
     homepage = "https://vba-m.com/";
     platforms = lib.platforms.linux;
+    mainProgram = "visualboyadvance-m";
   };
 }

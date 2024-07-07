@@ -1,29 +1,30 @@
-{ lib
-, buildPythonPackage
-, cxxfilt
-, fetchPypi
-, msgpack
-, pyasn1
-, pyasn1-modules
-, pycparser
-, pyqt5
-, pythonRelaxDepsHook
-, pyqtwebengine
-, pythonOlder
-, withGui ? false
-, wrapQtAppsHook
+{
+  lib,
+  buildPythonPackage,
+  cxxfilt,
+  fetchPypi,
+  msgpack,
+  pyasn1,
+  pyasn1-modules,
+  pycparser,
+  pyqt5,
+  pythonRelaxDepsHook,
+  pyqtwebengine,
+  pythonOlder,
+  withGui ? false,
+  wrapQtAppsHook,
 }:
 
 buildPythonPackage rec {
   pname = "vivisect";
-  version = "1.1.0";
+  version = "1.1.1";
   format = "setuptools";
 
   disabled = pythonOlder "3.6";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-tAIhsHFds3qwPngfOsR1+xDKgi29ACnvFAYoklRnCAI=";
+    hash = "sha256-URRBEZelw4s43zqtb/GrLxIksvrqHbqQWntT9jVonhU=";
   };
 
   pythonRelaxDeps = [
@@ -57,9 +58,7 @@ buildPythonPackage rec {
   # requires another repo for test files
   doCheck = false;
 
-  pythonImportsCheck = [
-    "vivisect"
-  ];
+  pythonImportsCheck = [ "vivisect" ];
 
   meta = with lib; {
     description = "Python disassembler, debugger, emulator, and static analysis framework";

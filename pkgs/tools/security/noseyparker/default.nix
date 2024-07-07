@@ -1,7 +1,6 @@
 { lib
 , rustPlatform
 , fetchFromGitHub
-, stdenv
 , cmake
 , pkg-config
 , openssl
@@ -40,6 +39,7 @@ rustPlatform.buildRustPackage rec {
 
   meta = with lib; {
     description = "Find secrets and sensitive information in textual data";
+    mainProgram = "noseyparker";
     homepage = "https://github.com/praetorian-inc/noseyparker";
     changelog = "https://github.com/praetorian-inc/noseyparker/blob/v${version}/CHANGELOG.md";
     license = licenses.asl20;

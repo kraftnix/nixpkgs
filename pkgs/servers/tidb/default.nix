@@ -2,30 +2,29 @@
 
 buildGoModule rec {
   pname = "tidb";
-  version = "7.1.0";
+  version = "8.1.0";
 
   src = fetchFromGitHub {
     owner = "pingcap";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-KiF76SD2YbZ4GFXiuCLODIb1guOTYJ7MHCFTVQKytyY=";
+    sha256 = "sha256-i8soETbTWmFZQqKYcRoLXVIgFCQxHDvXZbJNjDmS8Jo=";
   };
 
-  vendorHash = "sha256-yfsOIQGqHk6kX2usQwkSHGcaOkJnF8ZFfM58Owpjvec=";
+  vendorHash = "sha256-RNYL5tb6d8NhNiOm3x8sgo1SEc8+uMdWgYor/VL3C6s=";
 
   ldflags = [
-    "-s"
-    "-w"
-    "-X github.com/pingcap/tidb/dumpling/cli.ReleaseVersion=${version}"
-    "-X github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community"
+    "-X github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=${version}"
+    "-X github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community"
   ];
 
-  subPackages = [ "tidb-server" ];
+  subPackages = [ "cmd/tidb-server" ];
 
   meta = with lib; {
-    description = "An open-source, cloud-native, distributed, MySQL-Compatible database for elastic scale and real-time analytics";
+    description = "Open-source, cloud-native, distributed, MySQL-Compatible database for elastic scale and real-time analytics";
     homepage = "https://pingcap.com";
     license = licenses.asl20;
-    maintainers = [];
+    maintainers = with maintainers; [ Makuru ];
+    mainProgram = "tidb-server";
   };
 }

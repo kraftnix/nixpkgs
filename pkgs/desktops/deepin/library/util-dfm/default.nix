@@ -13,13 +13,13 @@
 
 stdenv.mkDerivation rec {
   pname = "util-dfm";
-  version = "1.2.8";
+  version = "1.2.24";
 
   src = fetchFromGitHub {
     owner = "linuxdeepin";
     repo = pname;
     rev = version;
-    sha256 = "sha256-Mc3x0nTnEyMnruZotiT1J4BGOeNAQlCXGbO0yVJtqYM=";
+    hash = "sha256-7MuQVkb+xRMtcbB5PQBv6Au/i3ONA0c1whnZ9bMrA/8=";
   };
 
   nativeBuildInputs = [
@@ -44,7 +44,7 @@ stdenv.mkDerivation rec {
   ];
 
   meta = with lib; {
-    description = "A Toolkits of libdfm-io,libdfm-mount and libdfm-burn";
+    description = "Toolkits of libdfm-io,libdfm-mount and libdfm-burn";
     homepage = "https://github.com/linuxdeepin/util-dfm";
     license = licenses.gpl3Plus;
     platforms = platforms.linux;

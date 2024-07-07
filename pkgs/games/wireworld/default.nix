@@ -6,6 +6,7 @@
 , makeWrapper
 , makeDesktopItem
 , copyDesktopItems
+, strip-nondeterminism
 }:
 
 stdenv.mkDerivation rec {
@@ -19,7 +20,12 @@ stdenv.mkDerivation rec {
     hash = "sha256-8BshnGLuA8lmG9g7FU349DWKP/fZvlvjrQBau/LSJ4E=";
   };
 
-  nativeBuildInputs = [ makeWrapper copyDesktopItems zip ];
+  nativeBuildInputs = [
+    copyDesktopItems
+    makeWrapper
+    strip-nondeterminism
+    zip
+  ];
 
   desktopItems = [
     (makeDesktopItem {
@@ -35,6 +41,7 @@ stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
     zip -9 -r Wireworld.love ./*
+    strip-nondeterminism --type zip Wireworld.love
     install -Dm444 -t $out/share/games/lovegames/ Wireworld.love
     makeWrapper ${love}/bin/love $out/bin/Wireworld \
       --add-flags $out/share/games/lovegames/Wireworld.love
@@ -43,6 +50,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Fascinating electronics logic puzzles, game where you'll learn how to build clocks, diodes, and logic gates";
+    mainProgram = "Wireworld";
     license = with licenses; [
       mit
       ofl
@@ -51,7 +59,7 @@ stdenv.mkDerivation rec {
       cc-by-sa-40
     ];
     downloadPage = "https://ldjam.com/events/ludum-dare/53/wireworld";
-    maintainers = with lib.maintainers; [ janik ];
+    maintainers = with lib.maintainers; [ ];
   };
 
 }

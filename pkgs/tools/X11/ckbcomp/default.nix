@@ -2,14 +2,14 @@
 
 stdenv.mkDerivation rec {
   pname = "ckbcomp";
-  version = "1.221";
+  version = "1.228";
 
   src = fetchFromGitLab {
     domain = "salsa.debian.org";
     owner = "installer-team";
     repo = "console-setup";
     rev = version;
-    sha256 = "sha256-4/g2RR3jDeEjntEC9IySn3hHofK23zKb8+kvTcbnpTI=";
+    sha256 = "sha256-fBDaP7OpQKQV8CIM3s74+E1M6BwsS47Jn2AX8xQK0tI=";
   };
 
   buildInputs = [ perl ];
@@ -32,5 +32,6 @@ stdenv.mkDerivation rec {
     license = licenses.gpl2Plus;
     maintainers = with lib.maintainers; [ dezgeg ];
     platforms = platforms.unix;
+    mainProgram = "ckbcomp";
   };
 }

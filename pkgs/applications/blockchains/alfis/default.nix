@@ -1,38 +1,52 @@
-{ stdenv
-, lib
-, rustPlatform
-, fetchFromGitHub
-, fetchpatch
-, pkg-config
-, makeWrapper
-, webkitgtk
-, zenity
-, Cocoa
-, Security
-, WebKit
-, withGui ? true
+{
+  stdenv,
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  makeWrapper,
+  webkitgtk,
+  zenity,
+  Cocoa,
+  Security,
+  WebKit,
+  withGui ? true,
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "alfis";
-  version = "0.8.3";
+  version = "0.8.4-unstable-2024-03-08";
 
   src = fetchFromGitHub {
     owner = "Revertron";
     repo = "Alfis";
-    rev = "v${version}";
-    sha256 = "sha256-QOKFnre5MW9EvrKrKBHWpOxi2fBKTDMhzCDX3ISd2cQ=";
+    rev = "28431ec0530405782038e7c02c2dedc3086bd7c9";
+    hash = "sha256-HL4RRGXE8PIcD+zTF1xZSyOpKMhKF75Mxm6KLGsR4Hc=";
   };
 
-  cargoPatches = [
-    (fetchpatch {
-      name = "bump-rust-web-view.patch";
-      url = "https://github.com/Revertron/Alfis/commit/03b461a740ab6ccbacd576eafc7a3faf4a66648f.patch";
-      sha256 = "sha256-CSqSMdVD31w7QxxXWtjKmqlaEirmbs1EVuiefSf1NKY=";
-    })
-  ];
+  cargoLock = {
+    lockFile = ./Cargo.lock;
+    outputHashes = {
+      "ecies-ed25519-ng-0.5.2" = "sha256-E+jVbgKKK1DnJWAJN+xGZPCV2n7Gxp2t7XXkDNDnPN4=";
+      "ureq-2.9.1" = "sha256-ATT2wJ9kmY/Jjw6FEbxqM9pDytKFLmu/ZqH/pJpZTu8=";
+      "web-view-0.7.3" = "sha256-eVMcpMRZHwOdWhfV6Z1uGUNOmhB41YZPaiz1tRQvhrI=";
+    };
+  };
 
-  cargoSha256 = "sha256-B4xI++U6RCljXCyaOmNj/SwA6I16zoiZsgk2VTiKfkg=";
+  nativeBuildInputs = [
+    pkg-config
+    makeWrapper
+  ];
+  buildInputs =
+    lib.optional stdenv.isDarwin Security
+    ++ lib.optional (withGui && stdenv.isLinux) webkitgtk
+    ++ lib.optionals (withGui && stdenv.isDarwin) [
+      Cocoa
+      WebKit
+    ];
+
+  buildNoDefaultFeatures = true;
+  buildFeatures = [ "doh" ] ++ lib.optional withGui "webgui";
 
   checkFlags = [
     # these want internet access, disable them
@@ -40,26 +54,18 @@ rustPlatform.buildRustPackage rec {
     "--skip=dns::client::tests::test_udp_client"
   ];
 
-  nativeBuildInputs = [ pkg-config makeWrapper ];
-  buildInputs = lib.optional stdenv.isDarwin Security
-    ++ lib.optional (withGui && stdenv.isLinux) webkitgtk
-    ++ lib.optionals (withGui && stdenv.isDarwin) [ Cocoa WebKit ];
-
-  buildNoDefaultFeatures = true;
-  buildFeatures = [
-    "doh"
-  ] ++ lib.optional withGui "webgui";
-
   postInstall = lib.optionalString (withGui && stdenv.isLinux) ''
     wrapProgram $out/bin/alfis \
       --prefix PATH : ${lib.makeBinPath [ zenity ]}
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Alternative Free Identity System";
     homepage = "https://alfis.name";
-    license = licenses.agpl3Only;
-    maintainers = with maintainers; [ misuzu ];
-    platforms = platforms.unix;
+    license = lib.licenses.agpl3Only;
+    maintainers = with lib.maintainers; [ misuzu ];
+    platforms = lib.platforms.unix;
+    mainProgram = "alfis";
+    broken = withGui && stdenv.isDarwin;
   };
 }

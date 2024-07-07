@@ -15,42 +15,20 @@
 
 ocamlPackages.buildDunePackage rec {
   pname = "ligo";
-  version = "0.66.0";
+  version = "1.6.0";
   src = fetchFromGitLab {
     owner = "ligolang";
     repo = "ligo";
     rev = version;
-    sha256 = "sha256-BFeNnpMT+WKqTvjVg+H2qHl5EUMcbe7xmJohbpD99gY=";
+    hash = "sha256-ZPHOgozuUij9+4YXZTnn1koddQEQZe/yrpb+OPHO+nA=";
     fetchSubmodules = true;
   };
-
-  postPatch = ''
-    substituteInPlace "vendors/tezos-ligo/src/lib_hacl/hacl.ml" \
-      --replace \
-        "Hacl.NaCl.Noalloc.Easy.secretbox ~pt:msg ~n:nonce ~key ~ct:cmsg" \
-        "Hacl.NaCl.Noalloc.Easy.secretbox ~pt:msg ~n:nonce ~key ~ct:cmsg ()" \
-      --replace \
-        "Hacl.NaCl.Noalloc.Easy.box_afternm ~pt:msg ~n:nonce ~ck:k ~ct:cmsg" \
-        "Hacl.NaCl.Noalloc.Easy.box_afternm ~pt:msg ~n:nonce ~ck:k ~ct:cmsg ()"
-
-    substituteInPlace "vendors/tezos-ligo/src/lib_crypto/crypto_box.ml" \
-      --replace \
-        "secretbox_open ~key ~nonce ~cmsg ~msg" \
-        "secretbox_open ~key ~nonce ~cmsg ~msg ()" \
-      --replace \
-        "Box.box_open ~k ~nonce ~cmsg ~msg" \
-        "Box.box_open ~k ~nonce ~cmsg ~msg ()"
-  '';
 
   # The build picks this up for ligo --version
   LIGO_VERSION = version;
 
   # This is a hack to work around the hack used in the dune files
   OPAM_SWITCH_PREFIX = "${tezos-rust-libs}";
-
-  duneVersion = "3";
-
-  strictDeps = true;
 
   nativeBuildInputs = [
     ocaml-crunch
@@ -73,8 +51,10 @@ ocamlPackages.buildDunePackage rec {
     ocamlgraph
     bisect_ppx
     decompress
+    fileutils
     ppx_deriving
     ppx_deriving_yojson
+    ppx_yojson_conv
     ppx_expect
     ppx_import
     terminal_size
@@ -92,6 +72,8 @@ ocamlPackages.buildDunePackage rec {
     parse-argv
     hacl-star
     prometheus
+    lwt_ppx
+    msgpck
     # lsp
     linol
     linol-lwt
@@ -103,8 +85,6 @@ ocamlPackages.buildDunePackage rec {
     # vendored tezos' deps
     aches
     aches-lwt
-    tezos-plonk
-    tezos-bls12-381-polynomial
     ctypes
     ctypes_stubs_js
     class_group_vdf
@@ -116,7 +96,7 @@ ocamlPackages.buildDunePackage rec {
     bls12-381
     bls12-381-signature
     ptime
-    mtime_1
+    mtime
     lwt_log
     secp256k1-internal
     resto
@@ -128,6 +108,9 @@ ocamlPackages.buildDunePackage rec {
     pure-splitmix
     zarith_stubs_js
     simple-diff
+    seqes
+    stdint
+    tezt
   ] ++ lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.Security
   ];
@@ -142,7 +125,8 @@ ocamlPackages.buildDunePackage rec {
   meta = with lib; {
     homepage = "https://ligolang.org/";
     downloadPage = "https://ligolang.org/docs/intro/installation";
-    description = "A friendly Smart Contract Language for Tezos";
+    description = "Friendly Smart Contract Language for Tezos";
+    mainProgram = "ligo";
     license = licenses.mit;
     platforms = ocamlPackages.ocaml.meta.platforms;
     broken = stdenv.isLinux && stdenv.isAarch64;

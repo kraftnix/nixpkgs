@@ -15,13 +15,13 @@
 
 python3Packages.buildPythonApplication rec {
   pname = "halftone";
-  version = "0.2.1";
+  version = "0.6.1";
 
   src = fetchFromGitHub {
     owner = "tfuxu";
     repo = pname;
-    rev = version;
-    hash = "sha256-EYxnGpVKPV3Xg6dH3m1aC3/pDigUxkNF7C8U16n8al8=";
+    rev = "refs/tags/${version}";
+    hash = "sha256-o55eimlDy86mbwveARxVXauMQEneAchVi2RNaj6FYxs=";
   };
 
   format = "other";
@@ -56,6 +56,8 @@ python3Packages.buildPythonApplication rec {
     homepage = "https://github.com/tfuxu/halftone";
     description = "Simple app for giving images that pixel-art style";
     license = licenses.gpl3Plus;
+    mainProgram = "halftone";
     maintainers = with maintainers; [ foo-dogsquared ];
+    platforms = platforms.linux;
   };
 }

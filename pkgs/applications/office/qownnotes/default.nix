@@ -13,19 +13,22 @@
 , wrapQtAppsHook
 , botan2
 , pkg-config
+, nixosTests
+, installShellFiles
+, xvfb-run
 }:
 
 let
   pname = "qownnotes";
   appname = "QOwnNotes";
-  version = "23.6.4";
+  version = "24.7.0";
 in
 stdenv.mkDerivation {
-  inherit pname appname version;
+  inherit pname version;
 
   src = fetchurl {
-    url = "https://download.tuxfamily.org/${pname}/src/${pname}-${version}.tar.xz";
-    hash = "sha256-4uH76/zLgNcuX6nI6YtTxGB9cYj3jHla/B3w9w6CUx4=";
+    url = "https://github.com/pbek/QOwnNotes/releases/download/v${version}/qownnotes-${version}.tar.xz";
+    hash = "sha256-yDWm6d3kZwBEo0i7CSni4EOA4H+lAuYSzmANi/q7HxU=";
   };
 
   nativeBuildInputs = [
@@ -33,6 +36,8 @@ stdenv.mkDerivation {
     qttools
     wrapQtAppsHook
     pkg-config
+    installShellFiles
+    xvfb-run
   ] ++ lib.optionals stdenv.isDarwin [ makeWrapper ];
 
   buildInputs = [
@@ -48,9 +53,16 @@ stdenv.mkDerivation {
     "USE_SYSTEM_BOTAN=1"
   ];
 
-  postInstall =
+  postInstall = ''
+    installShellCompletion --cmd ${appname} \
+      --bash <(xvfb-run $out/bin/${appname} --completion bash) \
+      --fish <(xvfb-run $out/bin/${appname} --completion fish)
+    installShellCompletion --cmd ${pname} \
+      --bash <(xvfb-run $out/bin/${appname} --completion bash) \
+      --fish <(xvfb-run $out/bin/${appname} --completion fish)
+  ''
   # Create a lowercase symlink for Linux
-  lib.optionalString stdenv.isLinux ''
+  + lib.optionalString stdenv.isLinux ''
     ln -s $out/bin/${appname} $out/bin/${pname}
   ''
   # Wrap application for macOS as lowercase binary
@@ -59,6 +71,9 @@ stdenv.mkDerivation {
     mv $out/bin/${appname}.app $out/Applications
     makeWrapper $out/Applications/${appname}.app/Contents/MacOS/${appname} $out/bin/${pname}
   '';
+
+  # Tests QOwnNotes using the NixOS module by launching xterm:
+  passthru.tests.basic-nixos-module-functionality = nixosTests.qownnotes;
 
   meta = with lib; {
     description = "Plain-text file notepad and todo-list manager with markdown support and Nextcloud/ownCloud integration";

@@ -2,13 +2,13 @@
 
 buildGoModule rec {
   pname = "fn";
-  version = "0.6.24";
+  version = "0.6.34";
 
   src = fetchFromGitHub {
     owner = "fnproject";
     repo = "cli";
     rev = version;
-    hash = "sha256-em9Bfrk7jJdmg3N+zH0VTpCdKPEOBK8vc297V5vmKzM=";
+    hash = "sha256-rbZySF7DrBN37YIetFXZE/aPSRex5cQnV8FZ0KDQ71k=";
   };
 
   vendorHash = null;
@@ -29,6 +29,7 @@ buildGoModule rec {
 
   meta = with lib; {
     description = "Command-line tool for the fn project";
+    mainProgram = "fn";
     homepage = "https://fnproject.io";
     license = licenses.asl20;
     maintainers = [ maintainers.c4605 ];

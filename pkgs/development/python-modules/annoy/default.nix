@@ -1,34 +1,41 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, h5py
-, nose
-, pythonOlder
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  h5py,
+  numpy,
+  pynose,
+  pythonOlder,
+  setuptools,
 }:
 
 buildPythonPackage rec {
   pname = "annoy";
-  version = "1.17.2";
-  format = "setuptools";
+  version = "1.17.3";
+  pyproject = true;
 
   disabled = pythonOlder "3.7";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-5nv7uDfRMG2kVVyIOGDHshXLMqhk5AAiKS1YR60foLs=";
+    hash = "sha256-nL/r7+Cl+EPropxr5MhNYB9PQa1N7QSG8biMOwdznBU=";
   };
 
-  nativeBuildInputs = [
-    h5py
-  ];
+  postPatch = ''
+    substituteInPlace setup.py \
+      --replace-fail "'nose>=1.0'" ""
+  '';
+
+  build-system = [ setuptools ];
+
+  nativeBuildInputs = [ h5py ];
 
   nativeCheckInputs = [
-    nose
+    numpy
+    pynose
   ];
 
-  pythonImportsCheck = [
-    "annoy"
-  ];
+  pythonImportsCheck = [ "annoy" ];
 
   meta = with lib; {
     description = "Approximate Nearest Neighbors in C++/Python optimized for memory usage and loading/saving to disk";

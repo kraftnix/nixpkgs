@@ -1,18 +1,19 @@
-{ lib
-, bluetooth-data-tools
-, bluetooth-sensor-state-data
-, buildPythonPackage
-, fetchFromGitHub
-, home-assistant-bluetooth
-, poetry-core
-, pytestCheckHook
-, pythonOlder
-, sensor-state-data
+{
+  lib,
+  bluetooth-data-tools,
+  bluetooth-sensor-state-data,
+  buildPythonPackage,
+  fetchFromGitHub,
+  home-assistant-bluetooth,
+  poetry-core,
+  pytestCheckHook,
+  pythonOlder,
+  sensor-state-data,
 }:
 
 buildPythonPackage rec {
   pname = "rapt-ble";
-  version = "0.1.1";
+  version = "0.1.2";
   format = "pyproject";
 
   disabled = pythonOlder "3.9";
@@ -21,7 +22,7 @@ buildPythonPackage rec {
     owner = "sairon";
     repo = pname;
     rev = "refs/tags/v${version}";
-    hash = "sha256-BLpe4AxxvFeOfcBSPtLwPIJZnNIBEdd6JpuQb9upO34=";
+    hash = "sha256-ozZwVgTV/xYl1nXLiybcPs6DQKocNdbxTEYDfYyQuvY=";
   };
 
   postPatch = ''
@@ -29,9 +30,7 @@ buildPythonPackage rec {
       --replace " --cov=rapt_ble --cov-report=term-missing:skip-covered" ""
   '';
 
-  nativeBuildInputs = [
-    poetry-core
-  ];
+  nativeBuildInputs = [ poetry-core ];
 
   propagatedBuildInputs = [
     bluetooth-data-tools
@@ -40,13 +39,9 @@ buildPythonPackage rec {
     sensor-state-data
   ];
 
-  nativeCheckInputs = [
-    pytestCheckHook
-  ];
+  nativeCheckInputs = [ pytestCheckHook ];
 
-  pythonImportsCheck = [
-    "rapt_ble"
-  ];
+  pythonImportsCheck = [ "rapt_ble" ];
 
   meta = with lib; {
     description = "Library for RAPT Pill hydrometer BLE devices";

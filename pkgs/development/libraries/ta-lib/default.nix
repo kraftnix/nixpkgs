@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "rafa-dot-el";
     repo = "talib";
-    rev = "${version}";
+    rev = version;
     sha256 = "sha256-bIzN8f9ZiOLaVzGAXcZUHUh/v9z1U+zY+MnyjJr1lSw=";
   };
 
@@ -16,6 +16,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description =
       "TA-Lib is a library that provides common functions for the technical analysis of financial market data.";
+    mainProgram = "ta-lib-config";
     homepage = "https://ta-lib.org/";
     license = lib.licenses.bsd3;
 

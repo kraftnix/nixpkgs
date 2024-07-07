@@ -4,17 +4,19 @@
 , git
 , nixosTests
 , python3
+, vaultwarden
 }:
 
 let
-  version = "2023.3.0b";
+  version = "2024.5.1";
 
   bw_web_builds = fetchFromGitHub {
     owner = "dani-garcia";
     repo = "bw_web_builds";
     rev = "v${version}";
-    hash = "sha256-3kCgT+NsYU7sRJvw56vcPXS7j+eHxgek195zZnamjJw=";
+    hash = "sha256-iNSkvQn3g64pI0uY7M4S7jEiRRDAc0wlPuJevzMJ+dc=";
   };
+
 in buildNpmPackage rec {
   pname = "vaultwarden-webvault";
   inherit version;
@@ -23,10 +25,10 @@ in buildNpmPackage rec {
     owner = "bitwarden";
     repo = "clients";
     rev = "web-v${lib.removeSuffix "b" version}";
-    hash = "sha256-pSaFksfdxVx7vaozR5h+wpPB42qVgs+aXhV7HGFq71E=";
+    hash = "sha256-U/lAt2HfoHGMu6mOki/4+ljhU9FwkodvFBr5zcDO8Wk=";
   };
 
-  npmDepsHash = "sha256-ZHbKq7EseYNTWjKi+W66WinmReZbpn3kJB3g0N2z4ww=";
+  npmDepsHash = "sha256-ui00afmnu77CTT9gh6asc4uT7AhVIuiD60sq/1f9viA=";
 
   postPatch = ''
     ln -s ${bw_web_builds}/{patches,resources} ..
@@ -48,6 +50,8 @@ in buildNpmPackage rec {
     "--workspace" "apps/web"
   ];
 
+  npmFlags = [ "--legacy-peer-deps" ];
+
   installPhase = ''
     runHook preInstall
     mkdir -p $out/share/vaultwarden
@@ -63,8 +67,9 @@ in buildNpmPackage rec {
   meta = with lib; {
     description = "Integrates the web vault into vaultwarden";
     homepage = "https://github.com/dani-garcia/bw_web_builds";
+    changelog = "https://github.com/dani-garcia/bw_web_builds/releases/tag/v${version}";
     platforms = platforms.all;
     license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ dotlambda msteen mic92 ];
+    inherit (vaultwarden.meta) maintainers;
   };
 }

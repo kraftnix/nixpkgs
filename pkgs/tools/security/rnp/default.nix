@@ -10,21 +10,25 @@
 , json_c
 , pkg-config
 , python3
+, sexpp
 , zlib
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "rnp";
-  version = "0.16.3";
+  version = "0.17.1";
 
   src = fetchFromGitHub {
     owner = "rnpgp";
     repo = "rnp";
-    rev = "v${version}";
-    sha256 = "sha256-kM3gBc5rbLJU7UXvWz4a9c+Ahi/d0z8R9S5t0B9Fts0=";
+    rev = "v${finalAttrs.version}";
+    hash = "sha256-jUh7BxRnB6KePCk1jIvKzXgxSmWdKlQYmxshZZY4SBQ";
   };
 
-  buildInputs = [ zlib bzip2 json_c botan2 ];
+  buildInputs = [ zlib bzip2 json_c botan2 sexpp ];
+
+  patches = [
+  ];
 
   cmakeFlags = [
     "-DCMAKE_INSTALL_PREFIX=${placeholder "out"}"
@@ -32,6 +36,7 @@ stdenv.mkDerivation rec {
     "-DBUILD_TESTING=on"
     "-DDOWNLOAD_GTEST=off"
     "-DDOWNLOAD_RUBYRNP=off"
+    "-DSYSTEM_LIBSEXPP=on"
   ];
 
   nativeBuildInputs = [ asciidoctor cmake gnupg gtest pkg-config python3 ];
@@ -43,7 +48,7 @@ stdenv.mkDerivation rec {
   outputs = [ "out" "lib" "dev" ];
 
   preConfigure = ''
-    echo "v${version}" > version.txt
+    echo "v${finalAttrs.version}" > version.txt
   '';
 
   meta = with lib; {
@@ -53,4 +58,4 @@ stdenv.mkDerivation rec {
     platforms = platforms.all;
     maintainers = with maintainers; [ ribose-jeffreylau ];
   };
-}
+})

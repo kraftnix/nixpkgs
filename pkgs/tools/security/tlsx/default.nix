@@ -5,16 +5,21 @@
 
 buildGoModule rec {
   pname = "tlsx";
-  version = "1.0.9";
+  version = "1.1.6";
 
   src = fetchFromGitHub {
     owner = "projectdiscovery";
-    repo = pname;
-    rev = "v${version}";
-    hash = "sha256-1lI4UyfUb+gXFwIfSauS/TBzEqrwQSY1UqzFDRXEBuE=";
+    repo = "tlsx";
+    rev = "refs/tags/v${version}";
+    hash = "sha256-FF5/STjf8joyJM6qPds1wFeRfncSamy/wWfNRZcG5kc=";
   };
 
-  vendorHash = "sha256-xPKdyTXu2SUU5y5bk+8gZklG6QyAEdl+8LwJizvW9+o=";
+  vendorHash = "sha256-sJravmpvwOSZiVNWFUTLlTA4xk6drItDj4JzR8JNrOo=";
+
+  ldflags = [
+    "-s"
+    "-w"
+  ];
 
   # Tests require network access
   doCheck = false;

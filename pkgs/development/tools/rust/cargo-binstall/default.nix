@@ -11,16 +11,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "cargo-binstall";
-  version = "0.23.1";
+  version = "1.6.9";
 
   src = fetchFromGitHub {
     owner = "cargo-bins";
     repo = "cargo-binstall";
     rev = "v${version}";
-    hash = "sha256-Dpo/J6FTW95rODWeIqD+8YnN4dt5yhLPxoezA1CTM4A=";
+    hash = "sha256-gByMCbh/RswZFrGY176PcZbBeHRsD0mv8Om4xQ/1wTo=";
   };
 
-  cargoHash = "sha256-Nc/kdrLsAooM41pwlkZ3zWsLvFlnxHG/2ZQhPsEyPkI=";
+  cargoHash = "sha256-GPDDKFM2dxsjQcrNK7y2lydnqGnFBUMcDJZ420jmzlo=";
 
   nativeBuildInputs = [
     pkg-config
@@ -31,12 +31,13 @@ rustPlatform.buildRustPackage rec {
     xz
     zstd
   ] ++ lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Security
+    darwin.apple_sdk.frameworks.SystemConfiguration
   ];
 
   buildNoDefaultFeatures = true;
   buildFeatures = [
     "fancy-no-backtrace"
+    "git"
     "pkg-config"
     "rustls"
     "trust-dns"
@@ -53,13 +54,9 @@ rustPlatform.buildRustPackage rec {
     "--skip=gh_api_client::test::test_gh_api_client_cargo_binstall_v0_20_1"
   ];
 
-  # remove cargo config so it can find the linker on aarch64-unknown-linux-gnu
-  postPatch = ''
-    rm .cargo/config
-  '';
-
   meta = with lib; {
-    description = "A tool for installing rust binaries as an alternative to building from source";
+    description = "Tool for installing rust binaries as an alternative to building from source";
+    mainProgram = "cargo-binstall";
     homepage = "https://github.com/cargo-bins/cargo-binstall";
     changelog = "https://github.com/cargo-bins/cargo-binstall/releases/tag/v${version}";
     license = licenses.gpl3Only;

@@ -1,18 +1,19 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub
-, pythonOlder
-, stdenv
-, packaging
-, setuptools
-, importlib-resources
-, dbus-next
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  pythonOlder,
+  stdenv,
+  packaging,
+  setuptools,
+  dbus-next,
+  rubicon-objc,
 }:
 
 buildPythonPackage rec {
   pname = "desktop-notifier";
-  version = "3.5.3";
-  format = "pyproject";
+  version = "5.0.0";
+  pyproject = true;
 
   disabled = pythonOlder "3.7";
 
@@ -20,27 +21,20 @@ buildPythonPackage rec {
     owner = "SamSchott";
     repo = pname;
     rev = "refs/tags/v${version}";
-    hash = "sha256-IA9LTsjO9se3Gx6Jm36m+tUxUHPjwmVCt9gAw1ZqDgg=";
+    hash = "sha256-Qv63aX96iUzxZPKr3FZq7fuWh2fYmKV3JMmy7txT05w=";
   };
 
-  nativeBuildInputs = [
-    setuptools
-  ];
+  build-system = [ setuptools ];
 
-  propagatedBuildInputs = [
-    packaging
-  ] ++ lib.optionals (pythonOlder "3.9") [
-    importlib-resources
-  ] ++ lib.optionals stdenv.isLinux [
-    dbus-next
-  ];
+  dependencies =
+    [ packaging ]
+    ++ lib.optionals stdenv.isLinux [ dbus-next ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [ rubicon-objc ];
 
   # no tests available, do the imports check instead
   doCheck = false;
 
-  pythonImportsCheck = [
-    "desktop_notifier"
-  ];
+  pythonImportsCheck = [ "desktop_notifier" ];
 
   meta = with lib; {
     description = "Python library for cross-platform desktop notifications";
@@ -48,6 +42,5 @@ buildPythonPackage rec {
     changelog = "https://github.com/samschott/desktop-notifier/releases/tag/v${version}";
     license = licenses.mit;
     maintainers = with maintainers; [ sfrijters ];
-    platforms = platforms.linux;
   };
 }

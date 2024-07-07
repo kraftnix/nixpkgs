@@ -2,10 +2,10 @@
 
 stdenv.mkDerivation rec {
   pname = "jmeter";
-  version = "5.5";
+  version = "5.6.3";
   src = fetchurl {
     url = "https://archive.apache.org/dist/jmeter/binaries/apache-${pname}-${version}.tgz";
-    sha256 = "sha256-YOicfEUjcxRn/bcX8z1hQIbBDwMWNpy6pFZQrhxALh8=";
+    sha256 = "sha256-9o78F/4GD2mMSKar4lmakzknSGvaKSTb4Ux0iVMY3d4=";
   };
 
   nativeBuildInputs = [ makeWrapper jre ];
@@ -45,7 +45,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "A 100% pure Java desktop application designed to load test functional behavior and measure performance";
+    description = "100% pure Java desktop application designed to load test functional behavior and measure performance";
     longDescription = ''
       The Apache JMeter desktop application is open source software, a 100%
       pure Java application designed to load test functional behavior and

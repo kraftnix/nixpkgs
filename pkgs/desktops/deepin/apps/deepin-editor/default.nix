@@ -16,17 +16,18 @@
 , libchardet
 , libuchardet
 , libiconv
+, gitUpdater
 }:
 
 stdenv.mkDerivation rec {
   pname = "deepin-editor";
-  version = "6.0.7";
+  version = "6.0.16";
 
   src = fetchFromGitHub {
     owner = "linuxdeepin";
     repo = pname;
     rev = version;
-    sha256 = "sha256-7dHSybjoWZ1alcMsMm4BEEQJjQgNmhC7Eskeo3ZmoS8=";
+    hash = "sha256-55hRXHP02MJWt+JUDCDKv4Boq0IwNW1itGw9rtCZrao=";
   };
 
   nativeBuildInputs = [
@@ -54,8 +55,10 @@ stdenv.mkDerivation rec {
 
   cmakeFlags = [ "-DVERSION=${version}" ];
 
+  passthru.updateScript = gitUpdater { };
+
   meta = with lib; {
-    description = "A desktop text editor that supports common text editing features";
+    description = "Desktop text editor that supports common text editing features";
     homepage = "https://github.com/linuxdeepin/deepin-editor";
     license = licenses.gpl3Plus;
     platforms = platforms.linux;

@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   pname = "nqp";
-  version = "2023.04";
+  version = "2024.06";
 
   src = fetchFromGitHub {
     owner = "raku";
     repo = "nqp";
     rev = version;
-    hash = "sha256-6V9d01aacDc+770XPSbQd4m1bg7Bbe47TTNOUxc2Fpw=";
+    hash = "sha256-FqZPUtzlS+ZSlyuCFMWHofLXPuXCWAT6Oak0g3o8cgM=";
     fetchSubmodules = true;
   };
 

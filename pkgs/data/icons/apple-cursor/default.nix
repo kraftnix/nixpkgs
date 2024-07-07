@@ -8,7 +8,7 @@ let
     name = variant;
     url = "https://github.com/ful1e5/apple_cursor/releases/download/v${version}/${variant}.${suffix}";
     hash = hash;
-  } // (if suffix == "zip" then { stripRoot = false; } else {}));
+  } // (lib.optionalAttrs (suffix == "zip") { stripRoot = false; }));
 
   version = "2.0.0";
   srcs = [
@@ -34,7 +34,7 @@ in stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "Opensource macOS Cursors.";
+    description = "Opensource macOS Cursors";
     homepage = "https://github.com/ful1e5/apple_cursor";
     license = licenses.gpl3;
     platforms = platforms.linux;

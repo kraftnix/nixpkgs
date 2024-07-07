@@ -6,7 +6,7 @@
 }:
 
 let
-  tag = "0.3.3";
+  tag = "0.3.9";
 in
 stdenv.mkDerivation {
   pname = "apfs";
@@ -16,7 +16,7 @@ stdenv.mkDerivation {
     owner = "linux-apfs";
     repo = "linux-apfs-rw";
     rev = "v${tag}";
-    hash = "sha256-dxbpJ9Jdn8u16yD001zCZxrr/nPbxdpF7JvU+oD+hTw=";
+    hash = "sha256-KZ/B3sR9x58DTUeHUI0ZPW6bb7vFkPMVXaEZ25m3cP0=";
   };
 
   hardeningDisable = [ "pic" ];
@@ -28,7 +28,7 @@ stdenv.mkDerivation {
     "INSTALL_MOD_PATH=$(out)"
   ];
 
-  passthru.tests.test = nixosTests.apfs;
+  passthru.tests.apfs = nixosTests.apfs;
 
   meta = with lib; {
     description = "APFS module for linux";

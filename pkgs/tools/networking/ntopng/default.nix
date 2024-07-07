@@ -24,15 +24,16 @@
 , zeromq
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "ntopng";
-  version = "5.6";
+  version = "6.0";
 
   src = fetchFromGitHub {
     owner = "ntop";
     repo = "ntopng";
-    rev = "refs/tags/${version}";
-    hash = "sha256-iGqrS0AneKYwGMEpbKy9if8bnaEu6aEV+QaH+JrF9xs=";
+    rev = "refs/tags/${finalAttrs.version}";
+    hash = "sha256-zLtJ4x1eWtvnd60iNuNkMOX8LinZMEJHSt/Y0FVQ8vw=";
+    fetchSubmodules = true;
   };
 
   preConfigure = ''
@@ -84,9 +85,10 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "High-speed web-based traffic analysis and flow collection tool";
     homepage = "https://www.ntop.org/products/traffic-analysis/ntop/";
-    changelog = "https://github.com/ntop/ntopng/blob/${version}/CHANGELOG.md";
+    changelog = "https://github.com/ntop/ntopng/blob/${finalAttrs.version}/CHANGELOG.md";
     license = licenses.gpl3Plus;
     platforms = platforms.linux ++ platforms.darwin;
     maintainers = with maintainers; [ bjornfor ];
+    mainProgram = "ntopng";
   };
-}
+})

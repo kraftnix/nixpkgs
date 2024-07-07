@@ -14,14 +14,18 @@
 
 stdenv.mkDerivation rec {
   pname = "nvidia-vaapi-driver";
-  version = "0.0.9";
+  version = "0.0.12";
 
   src = fetchFromGitHub {
     owner = "elFarto";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-mQtprgm6QonYiMUPPIcCbWxPQ/b2XuQiOkROZNPYaQk=";
+    sha256 = "sha256-ETdHbPI3rZR4026rOT5K9/pjKTZxD5+RioKzUVGMwsA=";
   };
+
+  patches = [
+    ./0001-hardcode-install_dir.patch
+  ];
 
   nativeBuildInputs = [
     meson
@@ -39,21 +43,13 @@ stdenv.mkDerivation rec {
     libva
   ];
 
-  # Note: Attempt to remove on next release after 0.0.9
-  # nixpkgs reference: https://github.com/NixOS/nixpkgs/pull/221978#issuecomment-1483892437
-  # upstream: https://github.com/elFarto/nvidia-vaapi-driver/issues/188
-  NIX_CFLAGS_COMPILE = [
-    "-Wno-error=format="
-    "-Wno-error=int-conversion"
-  ];
-
   postFixup = ''
     addOpenGLRunpath "$out/lib/dri/nvidia_drv_video.so"
   '';
 
   meta = with lib;{
     homepage = "https://github.com/elFarto/nvidia-vaapi-driver";
-    description = "A VA-API implemention using NVIDIA's NVDEC";
+    description = "VA-API implemention using NVIDIA's NVDEC";
     changelog = "https://github.com/elFarto/nvidia-vaapi-driver/releases/tag/v${version}";
     license = licenses.mit;
     maintainers = with maintainers;[ nickcao ];

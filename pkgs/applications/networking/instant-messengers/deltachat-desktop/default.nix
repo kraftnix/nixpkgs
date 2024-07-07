@@ -1,69 +1,62 @@
 { lib
 , buildNpmPackage
 , copyDesktopItems
-, electron_22
+, electron
 , buildGoModule
 , esbuild
 , fetchFromGitHub
-, fetchpatch
+, jq
+, deltachat-rpc-server
 , libdeltachat
 , makeDesktopItem
 , makeWrapper
-, noto-fonts-emoji
+, noto-fonts-color-emoji
 , pkg-config
 , python3
 , roboto
-, rustPlatform
 , sqlcipher
 , stdenv
 , CoreServices
+, testers
+, deltachat-desktop
 }:
 
 let
-  libdeltachat' = libdeltachat.overrideAttrs (old: rec {
-    version = "1.112.8";
-    src = fetchFromGitHub {
-      owner = "deltachat";
-      repo = "deltachat-core-rust";
-      rev = "v${version}";
-      hash = "sha256-bvXZtgFZx94Sw9Tst620HAhi9kmG8PjtWnghdw2ZF84=";
-    };
-    cargoDeps = rustPlatform.importCargoLock {
-      lockFile = ./Cargo.lock;
-      outputHashes = {
-        "email-0.0.21" = "sha256-Ys47MiEwVZenRNfenT579Rb17ABQ4QizVFTWUq3+bAY=";
-        "encoded-words-0.2.0" = "sha256-KK9st0hLFh4dsrnLd6D8lC6pRFFs8W+WpZSGMGJcosk=";
-        "lettre-0.9.2" = "sha256-+hU1cFacyyeC9UGVBpS14BWlJjHy90i/3ynMkKAzclk=";
-        "quinn-proto-0.9.2" = "sha256-N1gD5vMsBEHO4Fz4ZYEKZA8eE/VywXNXssGcK6hjvpg=";
-      };
-    };
-  });
   esbuild' = esbuild.override {
     buildGoModule = args: buildGoModule (args // rec {
-      version = "0.14.54";
+      version = "0.19.8";
       src = fetchFromGitHub {
         owner = "evanw";
         repo = "esbuild";
         rev = "v${version}";
-        hash = "sha256-qCtpy69ROCspRgPKmCV0YY/EOSWiNU/xwDblU0bQp4w=";
+        hash = "sha256-f13YbgHFQk71g7twwQ2nSOGA0RG0YYM01opv6txRMuw=";
       };
       vendorHash = "sha256-+BfxCyg0KkDQpHt/wycy/8CTG6YBA/VJvJFhhzUnSiQ=";
     });
   };
-in buildNpmPackage rec {
+in
+buildNpmPackage rec {
   pname = "deltachat-desktop";
-  version = "1.36.4";
+  version = "1.46.1";
 
   src = fetchFromGitHub {
     owner = "deltachat";
     repo = "deltachat-desktop";
     rev = "v${version}";
-    hash = "sha256-nJF8DPauhEoKC7mibpMJCGsgt9HnwkZp/jiWEEhShBs=";
+    hash = "sha256-90/Wmh0h75i3kvqj3Wo+A3KlKW8LLDWfPza2gDrDY6E=";
   };
 
-  npmDepsHash = "sha256-cTvNU4LO74pcw4Ybo9iftEis2yDA2SqGtrs4v+xAi5c=";
+  npmDepsHash = "sha256-UzWxMd+DYH5A8Zo1rzi8oIsoKbmzsVbGpr3uWtc02rY=";
+
+  postPatch = ''
+    test \
+      $(jq -r '.packages."node_modules/@deltachat/jsonrpc-client".version' package-lock.json) \
+      = $(pkg-config --modversion deltachat) \
+      || (echo "error: libdeltachat version does not match jsonrpc-client" && exit 1)
+  '';
 
   nativeBuildInputs = [
+    jq
     makeWrapper
     pkg-config
     python3
@@ -72,7 +65,8 @@ in buildNpmPackage rec {
   ];
 
   buildInputs = [
-    libdeltachat'
+    deltachat-rpc-server
+    libdeltachat
   ] ++ lib.optionals stdenv.isDarwin [
     CoreServices
   ];
@@ -85,7 +79,8 @@ in buildNpmPackage rec {
   };
 
   preBuild = ''
-    rm -r node_modules/deltachat-node/node/prebuilds
+    rm node_modules/@deltachat/stdio-rpc-server-*/deltachat-rpc-server
+    ln -s ${lib.getExe deltachat-rpc-server} node_modules/@deltachat/stdio-rpc-server-linux-*
   '';
 
   npmBuildScript = "build4production";
@@ -101,17 +96,20 @@ in buildNpmPackage rec {
     awk '!/^#/ && NF' build/packageignore_list \
       | xargs -I {} sh -c "rm -rf $out/lib/node_modules/deltachat-desktop/{}" || true
 
+    # required for electron to import index.js as a module
+    cp package.json $out/lib/node_modules/deltachat-desktop
+
     install -D build/icon.png \
       $out/share/icons/hicolor/scalable/apps/deltachat.png
 
-    ln -sf ${noto-fonts-emoji}/share/fonts/noto/NotoColorEmoji.ttf \
+    ln -sf ${noto-fonts-color-emoji}/share/fonts/noto/NotoColorEmoji.ttf \
       $out/lib/node_modules/deltachat-desktop/html-dist/fonts/noto/emoji
     for font in $out/lib/node_modules/deltachat-desktop/html-dist/fonts/Roboto-*.ttf; do
       ln -sf ${roboto}/share/fonts/truetype/$(basename $font) \
         $out/lib/node_modules/deltachat-desktop/html-dist/fonts
     done
 
-    makeWrapper ${electron_22}/bin/electron $out/bin/deltachat \
+    makeWrapper ${lib.getExe electron} $out/bin/deltachat \
       --set LD_PRELOAD ${sqlcipher}/lib/libsqlcipher${stdenv.hostPlatform.extensions.sharedLibrary} \
       --add-flags $out/lib/node_modules/deltachat-desktop
 
@@ -134,6 +132,12 @@ in buildNpmPackage rec {
       "x-scheme-handler/mailto"
     ];
   });
+
+  passthru.tests = {
+    version = testers.testVersion {
+      package = deltachat-desktop;
+    };
+  };
 
   meta = with lib; {
     description = "Email-based instant messaging for Desktop";

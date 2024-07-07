@@ -6,17 +6,17 @@
 
 buildGoModule rec {
   pname = "artifactory_exporter";
-  version = "1.13.1";
+  version = "1.14.0";
   rev = "v${version}";
 
   src = fetchFromGitHub {
     owner = "peimanja";
     repo = pname;
     rev = rev;
-    hash = "sha256-TXLIuTY5COHlhyp8xL9X02DbK2ku9AKnW5a4FYdzMic=";
+    hash = "sha256-+CCUSI7Rh9fENzsg7rpI01Cm++kafd1nGgpyFRt20Ug=";
   };
 
-  vendorHash = "sha256-Gin134G4NPK8M2E2RrgH62ieiuCw15jwm9SJg03w9ts=";
+  vendorHash = "sha256-CQ7JvXcutj63UzaYk/jbmd9G2whN48Xv1PCllaI9Nuo=";
 
   subPackages = [ "." ];
 
@@ -33,6 +33,7 @@ buildGoModule rec {
 
   meta = with lib; {
     description = "JFrog Artifactory Prometheus Exporter";
+    mainProgram = "artifactory_exporter";
     homepage = "https://github.com/peimanja/artifactory_exporter";
     changelog = "https://github.com/peimanja/artifactory_exporter/releases/tag/v${version}";
     license = licenses.asl20;

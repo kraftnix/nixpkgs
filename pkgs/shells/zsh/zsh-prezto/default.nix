@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   pname = "zsh-prezto";
-  version = "unstable-2023-04-13";
+  version = "0-unstable-2024-06-03";
 
   src = fetchFromGitHub {
     owner = "sorin-ionescu";
     repo = "prezto";
-    rev = "da87c79b3a35f5a4a504ea331e9ec52b4f786976";
-    sha256 = "EW1roiFaSgbXWYtc5Hxgj7m/ph6g1g225nXbvp0rtsw=";
+    rev = "9195b66161b196238cbd52a8a4abd027bdaf5f73";
+    sha256 = "wN/86uFBahUWl9RnKvdf88zVxou7B8Kh7/s3JfMye0g=";
     fetchSubmodules = true;
   };
 
@@ -28,7 +28,7 @@ stdenv.mkDerivation rec {
   passthru.updateScript = unstableGitUpdater {};
 
   meta = with lib; {
-    description = "The configuration framework for Zsh";
+    description = "Configuration framework for Zsh";
     longDescription = ''
       Prezto is the configuration framework for Zsh; it enriches
       the command line interface environment with sane defaults,

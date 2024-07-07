@@ -2,6 +2,7 @@
 , fetchurl
 , pkg-config
 , wafHook
+, buildPackages
 , python3
 , readline
 , libxslt
@@ -12,11 +13,11 @@
 
 stdenv.mkDerivation rec {
   pname = "tdb";
-  version = "1.4.8";
+  version = "1.4.10";
 
   src = fetchurl {
     url = "mirror://samba/tdb/${pname}-${version}.tar.gz";
-    sha256 = "sha256-hDTJyFfRPOP6hGb3VgHyXDaTZ2s2kZ8VngrWEhuvXOg=";
+    hash = "sha256-AjOOM8FsIcnilXHO9SPnaytwhjYlT28wxs8ZXUjGLa8=";
   };
 
   nativeBuildInputs = [
@@ -46,7 +47,14 @@ stdenv.mkDerivation rec {
   wafConfigureFlags = [
     "--bundled-libraries=NONE"
     "--builtin-libraries=replace"
+  ] ++ lib.optionals (stdenv.hostPlatform != stdenv.buildPlatform) [
+    "--cross-compile"
+    "--cross-execute=${stdenv.hostPlatform.emulator buildPackages}"
   ];
+
+  postFixup = if stdenv.isDarwin
+    then ''install_name_tool -id $out/lib/libtdb.dylib $out/lib/libtdb.dylib''
+    else null;
 
   # python-config from build Python gives incorrect values when cross-compiling.
   # If python-config is not found, the build falls back to using the sysconfig
@@ -54,7 +62,7 @@ stdenv.mkDerivation rec {
   PYTHON_CONFIG = "/invalid";
 
   meta = with lib; {
-    description = "The trivial database";
+    description = "Trivial database";
     longDescription = ''
       TDB is a Trivial Database. In concept, it is very much like GDBM,
       and BSD's DB except that it allows multiple simultaneous writers

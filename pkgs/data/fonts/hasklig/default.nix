@@ -20,9 +20,9 @@ stdenvNoCC.mkDerivation rec {
 
   meta = with lib; {
     homepage = "https://github.com/i-tu/Hasklig";
-    description = "A font with ligatures for Haskell code based off Source Code Pro";
+    description = "Font with ligatures for Haskell code based off Source Code Pro";
     license = licenses.ofl;
     platforms = platforms.all;
-    maintainers = with maintainers; [ davidrusu Profpatsch ];
+    maintainers = with maintainers; [ davidrusu ];
   };
 }

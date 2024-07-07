@@ -5,13 +5,13 @@
 
 stdenv.mkDerivation rec {
   pname = "nchat";
-  version = "3.39";
+  version = "3.67";
 
   src = fetchFromGitHub {
     owner = "d99kris";
     repo = "nchat";
     rev = "v${version}";
-    hash = "sha256-ZV2vpXztvBDN66OPLpO/ezLB4+/3NOOs1Eky8uXxBbc=";
+    hash = "sha256-PhvZejtSoDptzoMP5uIe6T0Ws/bQQXVuYH9uoZo3JsI=";
   };
 
   postPatch = ''
@@ -36,6 +36,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Terminal-based chat client with support for Telegram and WhatsApp";
+    mainProgram = "nchat";
     homepage = "https://github.com/d99kris/nchat";
     license = licenses.mit;
     maintainers = with maintainers; [ sikmir ];

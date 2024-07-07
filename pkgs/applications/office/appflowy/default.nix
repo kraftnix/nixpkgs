@@ -6,18 +6,18 @@
 , copyDesktopItems
 , makeDesktopItem
 , gtk3
-, openssl_1_1
 , xdg-user-dirs
 , keybinder3
+, libnotify
 }:
 
 stdenv.mkDerivation rec {
   pname = "appflowy";
-  version = "0.2.1";
+  version = "0.6.1";
 
   src = fetchzip {
-    url = "https://github.com/AppFlowy-IO/appflowy/releases/download/${version}/AppFlowy_x86_64-unknown-linux-gnu_ubuntu-20.04.tar.gz";
-    sha256 = "sha256-8+zT/CVG40y63Q0hjrgpuYrhWPFp6W4DaR4d+X0FMlU=";
+    url = "https://github.com/AppFlowy-IO/appflowy/releases/download/${version}/AppFlowy-${version}-linux-x86_64.tar.gz";
+    hash = "sha256-a8oupvBtT3sKhboSeS/GbVSauKXx54J4WZd+PyIbuzU=";
     stripRoot = false;
   };
 
@@ -29,8 +29,8 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     gtk3
-    openssl_1_1
     keybinder3
+    libnotify
   ];
 
   dontBuild = true;
@@ -46,6 +46,9 @@ stdenv.mkDerivation rec {
 
     # Copy archive contents to the outpout directory
     cp -r ./* $out/opt/
+
+    # Copy icon
+    install -Dm444 data/flutter_assets/assets/images/flowy_logo.svg $out/share/icons/hicolor/scalable/apps/appflowy.svg
 
     runHook postInstall
   '';
@@ -63,6 +66,7 @@ stdenv.mkDerivation rec {
       desktopName = "AppFlowy";
       comment = meta.description;
       exec = "appflowy";
+      icon = "appflowy";
       categories = [ "Office" ];
     })
   ];
@@ -75,5 +79,6 @@ stdenv.mkDerivation rec {
     changelog = "https://github.com/AppFlowy-IO/appflowy/releases/tag/${version}";
     maintainers = with maintainers; [ darkonion0 ];
     platforms = [ "x86_64-linux" ];
+    mainProgram = "appflowy";
   };
 }

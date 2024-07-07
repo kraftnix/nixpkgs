@@ -6,7 +6,7 @@ let
     # Native buildInputs components
     , bison, boost, cmake, fixDarwinDylibNames, flex, makeWrapper, pkg-config
     # Common components
-    , curl, libiconv, ncurses, openssl, openssl_1_1, pcre, pcre2
+    , curl, libiconv, ncurses, openssl, pcre2
     , libkrb5, libaio, liburing, systemd
     , CoreServices, cctools, perl
     , jemalloc, less, libedit
@@ -44,14 +44,13 @@ let
 
       buildInputs = [
         libiconv ncurses zlib
+        pcre2
+        openssl
+        curl
       ] ++ lib.optionals stdenv.hostPlatform.isLinux ([ libkrb5 systemd ]
         ++ (if (lib.versionOlder version "10.6") then [ libaio ] else [ liburing ]))
         ++ lib.optionals stdenv.hostPlatform.isDarwin [ CoreServices cctools perl libedit ]
-        ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [ jemalloc ]
-        ++ (if (lib.versionOlder version "10.5") then [ pcre ] else [ pcre2 ])
-        ++ (if (lib.versionOlder version "10.5")
-            then [ openssl_1_1 (curl.override { openssl = openssl_1_1; }) ]
-            else [ openssl curl ]);
+        ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [ jemalloc ];
 
       prePatch = ''
         sed -i 's,[^"]*/var/log,/var/log,g' storage/mroonga/vendor/groonga/CMakeLists.txt
@@ -134,10 +133,10 @@ let
       };
 
       meta = with lib; {
-        description = "An enhanced, drop-in replacement for MySQL";
+        description = "Enhanced, drop-in replacement for MySQL";
         homepage    = "https://mariadb.org/";
-        license     = licenses.gpl2;
-        maintainers = with maintainers; [ thoughtpolice ajs124 das_j ];
+        license     = licenses.gpl2Plus;
+        maintainers = with maintainers; [ thoughtpolice ] ++ teams.helsinki-systems.members;
         platforms   = platforms.all;
       };
     };
@@ -235,7 +234,6 @@ let
       '';
 
       CXXFLAGS = lib.optionalString stdenv.hostPlatform.isi686 "-fpermissive";
-      NIX_LDFLAGS = lib.optionalString stdenv.hostPlatform.isRiscV "-latomic";
     });
   in
     server // {
@@ -244,45 +242,33 @@ let
 in
   self: {
     # see https://mariadb.org/about/#maintenance-policy for EOLs
-    mariadb_104 = self.callPackage generic {
-      # Supported until 2024-06-18
-      version = "10.4.29";
-      hash = "sha256-Wy0zh5LnnmjWpUXisVYDu792GMc55fgg9XsdayIJITA=";
-      inherit (self.darwin) cctools;
-      inherit (self.darwin.apple_sdk.frameworks) CoreServices;
-    };
     mariadb_105 = self.callPackage generic {
       # Supported until 2025-06-24
-      version = "10.5.20";
-      hash = "sha256-sY+Q8NAR74e71VmtBDLN4Qfs21jqKCcQg7SJvf0e79s=";
+      # TODO should be removed
+      version = "10.5.25";
+      hash = "sha256-lhnQ9R6GQ1dGayxjMBo0pT99/ZnxjE/UUvqyK/Obpk4=";
       inherit (self.darwin) cctools;
       inherit (self.darwin.apple_sdk.frameworks) CoreServices;
     };
     mariadb_106 = self.callPackage generic {
       # Supported until 2026-07-06
-      version = "10.6.13";
-      hash = "sha256-8IXzec9Z7S02VkT8XNhVj4gqiG7JZAcNZaKFMN27dbo=";
-      inherit (self.darwin) cctools;
-      inherit (self.darwin.apple_sdk.frameworks) CoreServices;
-    };
-    mariadb_1010 = self.callPackage generic {
-      # Supported until 2023-11-17. TODO: remove ahead of 23.11 branchoff
-      version = "10.10.4";
-      hash = "sha256-IX2Z47Ami5MizyicGEMnqHiYs/aGvS6eS5JpXqYRixk=";
+      version = "10.6.18";
+      hash = "sha256-aJihER9HEwcJ4ouix70aV+S7VxAfbhCeWX1R5tOFzxg=";
       inherit (self.darwin) cctools;
       inherit (self.darwin.apple_sdk.frameworks) CoreServices;
     };
     mariadb_1011 = self.callPackage generic {
       # Supported until 2028-02-16
-      version = "10.11.3";
-      hash = "sha256-sGWw8ypun9R55Wb9ZnFFA3mIbY3aLZp++TCvHlwmwMc=";
+      version = "10.11.8";
+      hash = "sha256-XwTz4z2fHL7/BeecVNQdMCYwUAyZWu5ysGOOL5383w8=";
       inherit (self.darwin) cctools;
       inherit (self.darwin.apple_sdk.frameworks) CoreServices;
     };
     mariadb_110 = self.callPackage generic {
       # Supported until 2024-06-07
-      version = "11.0.2";
-      hash = "sha256-PHFXbK0OpBaIInDjg/lMyJaTt/vM4fpPMG/j6THkZK4=";
+      # TODO should be removed
+      version = "11.0.6";
+      hash = "sha256-AYnWKUbDfG20a/GkaLqVgLy6joDwWVjsSDwzh+zPmgA=";
       inherit (self.darwin) cctools;
       inherit (self.darwin.apple_sdk.frameworks) CoreServices;
     };

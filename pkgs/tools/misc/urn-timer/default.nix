@@ -4,31 +4,28 @@
 , xxd
 , pkg-config
 , imagemagick
-, wrapGAppsHook
+, wrapGAppsHook3
 , gtk3
 , jansson
+, nixosTests
 }:
 
 stdenv.mkDerivation {
   pname = "urn-timer";
-  version = "unstable-2023-03-18";
+  version = "0-unstable-2024-03-05";
 
   src = fetchFromGitHub {
     owner = "paoloose";
     repo = "urn";
-    rev = "09c075607a6e26307665b45095e133d6805f0aeb";
-    hash = "sha256-0/V1KQxwHhpcruEsll0+JNtgT/6vEkpt+ff3SlsHYr8=";
+    rev = "10082428749fabb69db1556f19940d8700ce48a2";
+    hash = "sha256-sQjHQ/i1d4v4ZnM0YAay+MdIj5l/FfIYj+NdH48OqfU=";
   };
-
-  postPatch = ''
-    substituteInPlace Makefile --replace 'rsync -a --exclude=".*"' 'cp -r'
-  '';
 
   nativeBuildInputs = [
     xxd
     pkg-config
     imagemagick
-    wrapGAppsHook
+    wrapGAppsHook3
   ];
 
   buildInputs = [
@@ -41,6 +38,8 @@ stdenv.mkDerivation {
   passthru.updateScript = unstableGitUpdater {
     url = "https://github.com/paoloose/urn.git";
   };
+
+  passthru.tests.nixosTest = nixosTests.urn-timer;
 
   meta = with lib; {
     homepage = "https://github.com/paoloose/urn";

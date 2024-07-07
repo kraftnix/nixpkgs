@@ -4,19 +4,21 @@
 , fetchFromGitHub
 , installShellFiles
 , buildPackages
+, testers
+, goreleaser
 }:
 buildGoModule rec {
   pname = "goreleaser";
-  version = "1.18.2";
+  version = "2.0.1";
 
   src = fetchFromGitHub {
     owner = "goreleaser";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-OvGPE6U/OeY1KcUFjR9CCBd0WOo2Rd4349wBm9SN8bo=";
+    hash = "sha256-GC9jT0vEokezBeCUSvSal7mcExiPgGcTHmP94A1cEPE=";
   };
 
-  vendorHash = "sha256-0hT7wraXTUAGMJdAw3xkGzojpXnwaEOoHnW28DrA1QQ=";
+  vendorHash = "sha256-0EO99dUNdIEQt8iswPOvHFt/+XeihhJRhJIt2bC9Zp0=";
 
   ldflags =
     [ "-s" "-w" "-X main.version=${version}" "-X main.builtBy=nixpkgs" ];
@@ -37,17 +39,23 @@ buildGoModule rec {
         --zsh  <(${emulator} $out/bin/goreleaser completion zsh)
     '';
 
+  passthru.tests.version = testers.testVersion {
+    package = goreleaser;
+    command = "goreleaser -v";
+    inherit version;
+  };
+
   meta = with lib; {
     description = "Deliver Go binaries as fast and easily as possible";
     homepage = "https://goreleaser.com";
     maintainers = with maintainers; [
       c0deaddict
-      endocrimes
       sarcasticadmin
       techknowlogick
       developer-guy
       caarlos0
     ];
     license = licenses.mit;
+    mainProgram = "goreleaser";
   };
 }

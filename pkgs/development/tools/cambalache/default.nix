@@ -8,28 +8,31 @@
 , gobject-introspection
 , desktop-file-utils
 , shared-mime-info
-, wrapGAppsHook
+, wrapGAppsHook4
 , glib
 , gtk3
 , gtk4
+, gtksourceview5
 , libadwaita
 , libhandy
-, webkitgtk
+, webkitgtk_4_1
+, webkitgtk_6_0
 , nix-update-script
 }:
 
 python3.pkgs.buildPythonApplication rec {
   pname = "cambalache";
-  version = "0.10.3";
+  version = "0.90.2";
 
   format = "other";
 
+  # Did not fetch submodule since it is only for tests we don't run.
   src = fetchFromGitLab {
     domain = "gitlab.gnome.org";
     owner = "jpu";
-    repo = pname;
+    repo = "cambalache";
     rev = version;
-    sha256 = "sha256-Xm8h3BBRibdLCeI/OeprF5dCCiNrfJCg7aE24uleCds=";
+    hash = "sha256-m3rearoCFQUzdZMXY2xyKf4dgdq7G4QlUbetrIqW83U=";
   };
 
   nativeBuildInputs = [
@@ -39,7 +42,7 @@ python3.pkgs.buildPythonApplication rec {
     gobject-introspection # for setup hook
     desktop-file-utils # for update-desktop-database
     shared-mime-info # for update-mime-database
-    wrapGAppsHook
+    wrapGAppsHook4
   ];
 
   pythonPath = with python3.pkgs; [
@@ -51,7 +54,9 @@ python3.pkgs.buildPythonApplication rec {
     glib
     gtk3
     gtk4
-    webkitgtk
+    gtksourceview5
+    webkitgtk_4_1
+    webkitgtk_6_0
     # For extra widgets support.
     libadwaita
     libhandy
@@ -63,10 +68,10 @@ python3.pkgs.buildPythonApplication rec {
   postPatch = ''
     patchShebangs postinstall.py
     # those programs are used at runtime not build time
-    # https://gitlab.gnome.org/jpu/cambalache/-/blob/main/meson.build#L79-80
+    # https://gitlab.gnome.org/jpu/cambalache/-/blob/0.12.1/meson.build#L79-80
     substituteInPlace ./meson.build \
-      --replace "find_program('broadwayd', required: true)" "" \
-      --replace "find_program('gtk4-broadwayd', required: true)" ""
+      --replace-fail "find_program('broadwayd', required: true)" "" \
+      --replace-fail "find_program('gtk4-broadwayd', required: true)" ""
   '';
 
   preFixup = ''
@@ -90,6 +95,7 @@ python3.pkgs.buildPythonApplication rec {
   meta = with lib; {
     homepage = "https://gitlab.gnome.org/jpu/cambalache";
     description = "RAD tool for GTK 4 and 3 with data model first philosophy";
+    mainProgram = "cambalache";
     maintainers = teams.gnome.members;
     license = with licenses; [
       lgpl21Only # Cambalache

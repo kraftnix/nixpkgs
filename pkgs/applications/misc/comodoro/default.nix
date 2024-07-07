@@ -10,16 +10,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "comodoro";
-  version = "0.0.8";
+  version = "0.0.10";
 
   src = fetchFromGitHub {
     owner = "soywod";
     repo = "comodoro";
     rev = "v${version}";
-    sha256 = "rGnVXyfWJkPHfpf1gRGbDJ6Y1ycKOOcCZ+Jx35fUo6M=";
+    hash = "sha256-Y9SuxqI8wvoF0+X6CLNDlSFCwlSU8R73NYF/LjACP18=";
   };
 
-  cargoSha256 = "jpshuavywCLN03xD/gFgQeGbKtmHq5pULbxd+RUbaDk=";
+  cargoHash = "sha256-1WJIIsTzbChWqvdBSR/OpLC1iR8FgLmypJFQEtpalbw=";
 
   nativeBuildInputs = lib.optional (installManPages || installShellCompletions) installShellFiles;
 
@@ -38,10 +38,11 @@ rustPlatform.buildRustPackage rec {
   '';
 
   meta = with lib; {
-    description = "CLI to manage your time.";
+    description = "CLI to manage your time";
     homepage = "https://pimalaya.org/comodoro/";
     changelog = "https://github.com/soywod/comodoro/blob/v${version}/CHANGELOG.md";
     license = licenses.mit;
     maintainers = with maintainers; [ soywod ];
+    mainProgram = "comodoro";
   };
 }

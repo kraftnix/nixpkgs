@@ -24,11 +24,11 @@
 
 stdenv.mkDerivation rec {
   pname = "gstreamer-vaapi";
-  version = "1.22.3";
+  version = "1.24.3";
 
   src = fetchurl {
     url = "https://gstreamer.freedesktop.org/src/${pname}/${pname}-${version}.tar.xz";
-    hash = "sha256-onhnBi6LaTBfylt9PxPtfDGLcD59cnVslDlb0wXHsyw=";
+    hash = "sha256-hF8u/g3KjasjTd6PsJHaLNBqnSpoNCK1bctoiVT5Bw4=";
   };
 
   outputs = [
@@ -86,6 +86,6 @@ stdenv.mkDerivation rec {
     homepage = "https://gstreamer.freedesktop.org";
     license = licenses.lgpl21Plus;
     platforms = platforms.linux;
-    maintainers = with maintainers; [ lilyinstarlight ];
+    maintainers = with maintainers; [ ];
   };
 }

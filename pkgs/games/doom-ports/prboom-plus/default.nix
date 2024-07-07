@@ -17,16 +17,16 @@
 
 stdenv.mkDerivation rec {
   pname = "prboom-plus";
-  version = "2.6.2";
+  version = "2.6.66";
 
   src = fetchFromGitHub {
     owner = "coelckers";
     repo = "prboom-plus";
     rev = "v${version}";
-    sha256 = "iK70PMRLJiZHcK1jCQ2s88LgEMbcfG2pXjwCDVG7zUM=";
+    sha256 = "sha256-moU/bZ2mS1QfKPP6HaAwWP1nRNZ4Ue5DFl9zBBrJiHw=";
   };
 
-  sourceRoot = "source/prboom2";
+  sourceRoot = "${src.name}/prboom2";
 
   nativeBuildInputs = [
     cmake
@@ -54,7 +54,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     homepage = "https://github.com/coelckers/prboom-plus";
-    description = "An advanced, Vanilla-compatible Doom engine based on PrBoom";
+    description = "Advanced, Vanilla-compatible Doom engine based on PrBoom";
     license = licenses.gpl2Plus;
     platforms = platforms.linux;
     maintainers = [ maintainers.ashley ];

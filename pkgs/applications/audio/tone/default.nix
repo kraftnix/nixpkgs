@@ -14,11 +14,9 @@ buildDotnetModule rec {
   projectFile = "tone/tone.csproj";
   executables = [ "tone" ];
   nugetDeps = ./nuget-deps.nix;
-  dotnetBuildFlags = [ "--no-self-contained" ];
+
   dotnetInstallFlags = [
     "-p:PublishSingleFile=false"
-    "-p:PublishTrimmed=false"
-    "-p:PublishReadyToRun=false"
   ];
 
   dotnet-sdk = dotnetCorePackages.sdk_6_0;
@@ -26,9 +24,10 @@ buildDotnetModule rec {
 
   meta = with lib; {
     homepage = "https://github.com/sandreas/tone";
-    description = "A cross platform utility to dump and modify audio metadata for a wide variety of formats";
+    description = "Cross platform utility to dump and modify audio metadata for a wide variety of formats";
     license = licenses.asl20;
     maintainers = [ maintainers.jvanbruegge ];
-    platforms = [ "x86_64-linux" ];
+    platforms = platforms.linux;
+    mainProgram = "tone";
   };
 }

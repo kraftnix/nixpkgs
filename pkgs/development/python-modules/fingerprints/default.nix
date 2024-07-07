@@ -1,42 +1,39 @@
-{ lib
-, fetchPypi
-, buildPythonPackage
-, normality
-, mypy
-, coverage
-, nose
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  normality,
+  pytestCheckHook,
+  pythonOlder,
+  setuptools,
 }:
+
 buildPythonPackage rec {
   pname = "fingerprints";
-  version = "1.1.0";
+  version = "1.2.3";
+  pyproject = true;
 
-  src = fetchPypi {
-    inherit pname version;
-    hash = "sha256-GZmurg3rpD081QZW/LUKWblhsQQSS6lg9O7y/kGy4To=";
+  disabled = pythonOlder "3.7";
+
+  src = fetchFromGitHub {
+    owner = "alephdata";
+    repo = "fingerprints";
+    rev = version;
+    hash = "sha256-U2UslCy1OagVTtllCKsEBX4zI/qIczbxs2Cxzy+/Xys=";
   };
 
-  propagatedBuildInputs = [
-    normality
-  ];
+  nativeBuildInputs = [ setuptools ];
 
-  nativeCheckInputs = [
-    mypy
-    coverage
-    nose
-  ];
+  propagatedBuildInputs = [ normality ];
 
-  checkPhase = ''
-    nosetests
-  '';
+  nativeCheckInputs = [ pytestCheckHook ];
 
-  pythonImportsCheck = [
-    "fingerprints"
-  ];
+  pythonImportsCheck = [ "fingerprints" ];
 
   meta = with lib; {
-    description = "A library to generate entity fingerprints";
+    description = "Library to generate entity fingerprints";
     homepage = "https://github.com/alephdata/fingerprints";
     license = licenses.mit;
-    maintainers = [ ];
+    maintainers = with maintainers; [ ];
   };
 }

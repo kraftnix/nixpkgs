@@ -1,20 +1,95 @@
-/* Generate JSON, XML and DocBook documentation for given NixOS options.
+/**
+  Generates documentation for [nix modules](https://nix.dev/tutorials/module-system/module-system.html).
 
-   Minimal example:
+  It uses the declared `options` to generate documentation in various formats.
 
-    { pkgs,  }:
+  # Outputs
 
-    let
-      eval = import (pkgs.path + "/nixos/lib/eval-config.nix") {
-        baseModules = [
-          ../module.nix
-        ];
-        modules = [];
-      };
-    in pkgs.nixosOptionsDoc {
-      options = eval.options;
+  This function returns an attribute set with the following entries.
+
+  ## optionsCommonMark
+
+  Documentation in CommonMark text format.
+
+  ## optionsJSON
+
+  All options in a JSON format suitable for further automated processing.
+
+  `example.json`
+  ```json
+  {
+    ...
+    "fileSystems.<name>.options": {
+      "declarations": ["nixos/modules/tasks/filesystems.nix"],
+      "default": {
+        "_type": "literalExpression",
+        "text": "[\n  \"defaults\"\n]"
+      },
+      "description": "Options used to mount the file system.",
+      "example": {
+        "_type": "literalExpression",
+        "text": "[\n  \"data=journal\"\n]"
+      },
+      "loc": ["fileSystems", "<name>", "options"],
+      "readOnly": false,
+      "type": "non-empty (list of string (with check: non-empty))"
+      "relatedPackages": "- [`pkgs.tmux`](\n    https://search.nixos.org/packages?show=tmux&sort=relevance&query=tmux\n  )\n",
+    },
+    ...
+  }
+  ```
+
+  ## optionsDocBook
+
+  deprecated since 23.11 and will be removed in 24.05.
+
+  ## optionsAsciiDoc
+
+  Documentation rendered as AsciiDoc. This is useful for e.g. man pages.
+
+  > Note: NixOS itself uses this ouput to to build the configuration.nix man page"
+
+  ## optionsNix
+
+  All options as a Nix attribute set value, with the same schema as `optionsJSON`.
+
+  # Example
+
+  ## Example: NixOS configuration
+
+  ```nix
+  let
+    # Evaluate a NixOS configuration
+    eval = import (pkgs.path + "/nixos/lib/eval-config.nix") {
+      # Overriden explicitly here, this would include all modules from NixOS otherwise.
+      # See: docs of eval-config.nix for more details
+      baseModules = [];
+      modules = [
+        ./module.nix
+      ];
+    };
+  in
+    pkgs.nixosOptionsDoc {
+      inherit (eval) options;
     }
+  ```
 
+  ## Example: non-NixOS modules
+
+  `nixosOptionsDoc` can also be used to build documentation for non-NixOS modules.
+
+  ```nix
+  let
+    eval = lib.evalModules {
+      modules = [
+        ./module.nix
+      ];
+    };
+  in
+    pkgs.nixosOptionsDoc {
+      inherit (eval) options;
+    }
+  ```
 */
 { pkgs
 , lib
@@ -39,11 +114,14 @@
 # allow docbook option docs if `true`. only markdown documentation is allowed when set to
 # `false`, and a different renderer may be used with different bugs and performance
 # characteristics but (hopefully) indistinguishable output.
-, allowDocBook ? true
-# whether lib.mdDoc is required for descriptions to be read as markdown.
-# !!! when this is eventually flipped to true, `lib.doRename` should also default to emitting Markdown
-, markdownByDefault ? false
+# deprecated since 23.11.
+# TODO remove in a while.
+, allowDocBook ? false
+# TODO remove in a while (see https://github.com/NixOS/nixpkgs/issues/300735)
+, markdownByDefault ? true
 }:
+
+assert markdownByDefault && ! allowDocBook;
 
 let
   rawOpts = lib.optionAttrSetToDocList options;
@@ -115,7 +193,7 @@ in rec {
     { meta.description = "List of NixOS options in JSON format";
       nativeBuildInputs = [
         pkgs.brotli
-        pkgs.python3Minimal
+        pkgs.python3
       ];
       options = builtins.toFile "options.json"
         (builtins.unsafeDiscardStringContext (builtins.toJSON optionsNix));
@@ -134,9 +212,16 @@ in rec {
       TOUCH_IF_DB=$dst/.used-docbook \
       python ${./mergeJSON.py} \
         ${lib.optionalString warningsAreErrors "--warnings-are-errors"} \
-        ${if allowDocBook then "--warn-on-docbook" else "--error-on-docbook"} \
         $baseJSON $options \
         > $dst/options.json
+
+    if grep /nixpkgs/nixos/modules $dst/options.json; then
+      echo "The manual appears to depend on the location of Nixpkgs, which is bad"
+      echo "since this prevents sharing via the NixOS channel.  This is typically"
+      echo "caused by an option default that refers to a relative path (see above"
+      echo "for hints about the offending path)."
+      exit 1
+    fi
 
       brotli -9 < $dst/options.json > $dst/options.json.br
 
@@ -145,38 +230,5 @@ in rec {
       echo "file json-br $dst/options.json.br" >> $out/nix-support/hydra-build-products
     '';
 
-  optionsUsedDocbook = pkgs.runCommand "options-used-docbook" {} ''
-    if [ -e ${optionsJSON}/share/doc/nixos/.used-docbook ]; then
-      echo 1
-    else
-      echo 0
-    fi >"$out"
-  '';
-
-  optionsDocBook = pkgs.runCommand "options-docbook.xml" {
-    nativeBuildInputs = [
-      pkgs.nixos-render-docs
-    ];
-  } ''
-    nixos-render-docs -j $NIX_BUILD_CORES options docbook \
-      --manpage-urls ${pkgs.path + "/doc/manpage-urls.json"} \
-      --revision ${lib.escapeShellArg revision} \
-      --document-type ${lib.escapeShellArg documentType} \
-      --varlist-id ${lib.escapeShellArg variablelistId} \
-      --id-prefix ${lib.escapeShellArg optionIdPrefix} \
-      ${lib.optionalString markdownByDefault "--markdown-by-default"} \
-      ${optionsJSON}/share/doc/nixos/options.json \
-      options.xml
-
-    if grep /nixpkgs/nixos/modules options.xml; then
-      echo "The manual appears to depend on the location of Nixpkgs, which is bad"
-      echo "since this prevents sharing via the NixOS channel.  This is typically"
-      echo "caused by an option default that refers to a relative path (see above"
-      echo "for hints about the offending path)."
-      exit 1
-    fi
-
-    ${pkgs.libxslt.bin}/bin/xsltproc \
-      -o "$out" ${./postprocess-option-descriptions.xsl} options.xml
-  '';
+  optionsDocBook = throw "optionsDocBook has been removed in 24.05";
 }

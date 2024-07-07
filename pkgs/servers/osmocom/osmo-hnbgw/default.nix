@@ -23,7 +23,7 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "osmocom";
     repo = "osmo-hnbgw";
-    rev = "${version}";
+    rev = version;
     hash = "sha256-OWCAiU4mK57e5gm6QOovwmoFAaCG1d8ZYpkP4isIqvI=";
   };
 
@@ -51,9 +51,10 @@ stdenv.mkDerivation rec {
 
   meta = {
     description = "Osmocom Home NodeB Gateway, for attaching femtocells to the 3G CN (OsmoMSC, OsmoSGSN)";
+    mainProgram = "osmo-hnbgw";
     homepage = "https://osmocom.org/projects/osmohnbgw";
     license = lib.licenses.agpl3Plus;
-    maintainers = with lib.maintainers; [ janik ];
+    maintainers = with lib.maintainers; [ ];
     platforms = lib.platforms.linux;
   };
 }

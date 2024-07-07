@@ -2,13 +2,13 @@
 
 buildGoModule rec {
   pname = "skaffold";
-  version = "2.5.0";
+  version = "2.12.0";
 
   src = fetchFromGitHub {
     owner = "GoogleContainerTools";
     repo = "skaffold";
     rev = "v${version}";
-    hash = "sha256-nCJcgWVQeX5QsMyH117PWBBW+7H5ZigjDxPmiaYER1Y=";
+    hash = "sha256-q57n5Jo682u/YK+5bgYqMufjPuPOPsBgJzxSl1fdqxA=";
   };
 
   vendorHash = null;
@@ -41,6 +41,7 @@ buildGoModule rec {
     homepage = "https://skaffold.dev/";
     changelog = "https://github.com/GoogleContainerTools/skaffold/releases/tag/v${version}";
     description = "Easy and Repeatable Kubernetes Development";
+    mainProgram = "skaffold";
     longDescription = ''
       Skaffold is a command line tool that facilitates continuous development for Kubernetes applications.
       You can iterate on your application source code locally then deploy to local or remote Kubernetes clusters.

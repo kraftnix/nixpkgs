@@ -1,29 +1,30 @@
-{ lib
-, buildPythonPackage
-, isPyPy
-, fetchFromGitHub
-, attrs
-, exceptiongroup
-, pexpect
-, doCheck ? true
-, pytestCheckHook
-, pytest-xdist
-, sortedcontainers
-, pythonOlder
-, sphinxHook
-, sphinx-rtd-theme
-, sphinx-hoverxref
-, sphinx-codeautolink
-, tzdata
-# Used to break internal dependency loop.
-, enableDocumentation ? true
+{
+  lib,
+  buildPythonPackage,
+  isPyPy,
+  fetchFromGitHub,
+  setuptools,
+  attrs,
+  exceptiongroup,
+  pexpect,
+  doCheck ? true,
+  pytestCheckHook,
+  pytest-xdist,
+  python,
+  sortedcontainers,
+  stdenv,
+  pythonOlder,
+  sphinxHook,
+  sphinx-rtd-theme,
+  sphinx-hoverxref,
+  sphinx-codeautolink,
+  tzdata,
 }:
 
 buildPythonPackage rec {
   pname = "hypothesis";
-  version = "6.68.2";
-  outputs = [ "out" ] ++ lib.optional enableDocumentation "doc";
-  format = "setuptools";
+  version = "6.103.0";
+  pyproject = true;
 
   disabled = pythonOlder "3.7";
 
@@ -31,7 +32,7 @@ buildPythonPackage rec {
     owner = "HypothesisWorks";
     repo = "hypothesis";
     rev = "hypothesis-python-${version}";
-    hash = "sha256-SgX8esTyC3ulFIv9mZJUoBA5hiv7Izr2hyD+NOudkpE=";
+    hash = "sha256-sll0GAI1nvBQvRqgpTkLpj7GQI988AftDQHV1zh2t1w=";
   };
 
   # I tried to package sphinx-selective-exclude, but it throws
@@ -49,27 +50,18 @@ buildPythonPackage rec {
 
   postUnpack = "sourceRoot=$sourceRoot/hypothesis-python";
 
-  nativeBuildInputs = lib.optionals enableDocumentation [
-    sphinxHook
-    sphinx-rtd-theme
-    sphinx-hoverxref
-    sphinx-codeautolink
-  ];
+  nativeBuildInputs = [ setuptools ];
 
   propagatedBuildInputs = [
     attrs
     sortedcontainers
-  ] ++ lib.optionals (pythonOlder "3.11") [
-    exceptiongroup
-  ];
+  ] ++ lib.optionals (pythonOlder "3.11") [ exceptiongroup ];
 
   nativeCheckInputs = [
     pexpect
     pytest-xdist
     pytestCheckHook
-  ] ++ lib.optionals (isPyPy) [
-    tzdata
-  ];
+  ] ++ lib.optionals isPyPy [ tzdata ];
 
   inherit doCheck;
 
@@ -78,19 +70,56 @@ buildPythonPackage rec {
     rm tox.ini
   '';
 
-  pytestFlagsArray = [
-    "tests/cover"
-  ];
+  pytestFlagsArray = [ "tests/cover" ];
 
-  pythonImportsCheck = [
-    "hypothesis"
-  ];
+  disabledTests =
+    [
+      # racy, fails to find a file sometimes
+      "test_recreate_charmap"
+      "test_uses_cached_charmap"
+    ]
+    ++ lib.optionals (pythonOlder "3.10") [
+      # not sure why these tests fail with only 3.9
+      # FileNotFoundError: [Errno 2] No such file or directory: 'git'
+      "test_observability"
+      "test_assume_has_status_reason"
+      "test_observability_captures_stateful_reprs"
+    ];
+
+  pythonImportsCheck = [ "hypothesis" ];
+
+  passthru = {
+    doc = stdenv.mkDerivation {
+      # Forge look and feel of multi-output derivation as best as we can.
+      #
+      # Using 'outputs = [ "doc" ];' breaks a lot of assumptions.
+      name = "${pname}-${version}-doc";
+      inherit src pname version;
+
+      postInstallSphinx = ''
+        mv $out/share/doc/* $out/share/doc/python$pythonVersion-$pname-$version
+      '';
+
+      nativeBuildInputs = [
+        sphinxHook
+        sphinx-rtd-theme
+        sphinx-hoverxref
+        sphinx-codeautolink
+      ];
+
+      inherit (python) pythonVersion;
+      inherit meta;
+    };
+  };
 
   meta = with lib; {
     description = "Library for property based testing";
+    mainProgram = "hypothesis";
     homepage = "https://github.com/HypothesisWorks/hypothesis";
-    changelog = "https://hypothesis.readthedocs.io/en/latest/changes.html#v${lib.replaceStrings [ "." ] [ "-" ] version}";
+    changelog = "https://hypothesis.readthedocs.io/en/latest/changes.html#v${
+      lib.replaceStrings [ "." ] [ "-" ] version
+    }";
     license = licenses.mpl20;
-    maintainers = with maintainers; [ SuperSandro2000 ];
+    maintainers = with maintainers; [ ];
   };
 }

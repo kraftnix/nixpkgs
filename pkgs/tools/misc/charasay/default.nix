@@ -6,16 +6,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "charasay";
-  version = "2.0.0";
+  version = "3.2.0";
 
   src = fetchFromGitHub {
     owner = "latipun7";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-99lMXgSHgxKc0GHnRRciMoZ+rQJyMAx+27fj6NkXxds=";
+    hash = "sha256-7z5+7yrx5X5rdBMNj9oWBZ2IX0s88c1SLhgz2IDDEn8=";
   };
 
-  cargoHash = "sha256-0la16XinseOXPH2mvdYD7ZquvF2dju4UPBwl5VrTEZA=";
+  cargoHash = "sha256-5htNU8l+amh+C8EL1K4UcXzf5Pbhhjd5RhxrucJoj/M=";
 
   nativeBuildInputs = [ installShellFiles ];
 
@@ -31,9 +31,10 @@ rustPlatform.buildRustPackage rec {
   '';
 
   meta = with lib; {
-    description = "The future of cowsay - Colorful characters saying something";
+    description = "Future of cowsay - Colorful characters saying something";
     homepage = "https://github.com/latipun7/charasay";
     license = licenses.mit;
     maintainers = with maintainers; [ hmajid2301 ];
+    mainProgram = "chara";
   };
 }

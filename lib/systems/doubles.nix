@@ -13,7 +13,7 @@ let
     "x86_64-darwin" "i686-darwin" "aarch64-darwin" "armv7a-darwin"
 
     # FreeBSD
-    "i686-freebsd13" "x86_64-freebsd13"
+    "i686-freebsd" "x86_64-freebsd"
 
     # Genode
     "aarch64-genode" "i686-genode" "x86_64-genode"
@@ -41,7 +41,7 @@ let
 
     # none
     "aarch64_be-none" "aarch64-none" "arm-none" "armv6l-none" "avr-none" "i686-none"
-    "microblaze-none" "microblazeel-none" "msp430-none" "or1k-none" "m68k-none"
+    "microblaze-none" "microblazeel-none" "mips-none" "mips64-none" "msp430-none" "or1k-none" "m68k-none"
     "powerpc-none" "powerpcle-none" "riscv32-none" "riscv64-none" "rx-none"
     "s390-none" "s390x-none" "vc4-none" "x86_64-none"
 

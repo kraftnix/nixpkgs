@@ -1,24 +1,25 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, graphviz
-, graphvizPkgs
-, isPyPy
-, pytestCheckHook
-, pythonOlder
-, substituteAll
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  graphviz,
+  graphvizPkgs,
+  isPyPy,
+  python,
+  pythonOlder,
+  substituteAll,
 }:
 
 buildPythonPackage rec {
   pname = "objgraph";
-  version = "3.5.0";
+  version = "3.6.1";
   format = "setuptools";
 
-  disabled = pythonOlder "3.5" || isPyPy;
+  disabled = pythonOlder "3.7" || isPyPy;
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-R1LKW8wOBRLkG4zE0ngKwv07PqvQO36VClWUwGID38Q=";
+    hash = "sha256-/pbHQUe7yq6GZbOW5TiL3MMZfe67pOY4HwUgLuW0U6c=";
   };
 
   patches = [
@@ -28,27 +29,23 @@ buildPythonPackage rec {
     })
   ];
 
-  propagatedBuildInputs = [
-    graphviz
-  ];
+  passthru.optional-dependencies = {
+    ipython = [ graphviz ];
+  };
 
-  nativeCheckInputs = [
-    pytestCheckHook
-  ];
+  pythonImportsCheck = [ "objgraph" ];
 
-  pythonImportsCheck = [
-    "objgraph"
-  ];
-
-  pytestFlagsArray = [
-    "tests.py"
-  ];
+  checkPhase = ''
+    runHook preCheck
+    ${python.interpreter} tests.py
+    runHook postCheck
+  '';
 
   meta = with lib; {
     description = "Draws Python object reference graphs with graphviz";
     homepage = "https://mg.pov.lt/objgraph/";
     changelog = "https://github.com/mgedmin/objgraph/blob/${version}/CHANGES.rst";
     license = licenses.mit;
-    maintainers = with maintainers; [ ];
+    maintainers = with maintainers; [ dotlambda ];
   };
 }
