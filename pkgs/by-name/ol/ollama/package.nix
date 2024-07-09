@@ -102,12 +102,12 @@ let
   };
 
   cudaToolkit = buildEnv {
-    name = "cuda-toolkit";
-    ignoreCollisions = true; # FIXME: find a cleaner way to do this without ignoring collisions
+    name = "cuda-merged";
     paths = [
-      cudaPackages.cudatoolkit
-      cudaPackages.cuda_cudart
-      cudaPackages.cuda_cudart.static
+      (lib.getBin (cudaPackages.cuda_nvcc.__spliced.buildHost or cudaPackages.cuda_nvcc))
+      (lib.getLib cudaPackages.cuda_cudart)
+      (lib.getOutput "static" cudaPackages.cuda_cudart)
+      (lib.getLib cudaPackages.libcublas)
     ];
   };
 
@@ -144,8 +144,6 @@ goBuild ((lib.optionalAttrs enableRocm {
   CLBlast_DIR = "${clblast}/lib/cmake/CLBlast";
 }) // (lib.optionalAttrs enableCuda {
   CUDA_LIB_DIR = "${cudaToolkit}/lib";
-  CUDACXX = "${cudaToolkit}/bin/nvcc";
-  CUDAToolkit_ROOT = cudaToolkit;
 }) // {
   inherit pname version src vendorHash;
 
@@ -153,6 +151,8 @@ goBuild ((lib.optionalAttrs enableRocm {
     cmake
   ] ++ lib.optionals enableRocm [
     rocmPackages.llvm.bintools
+  ] ++ lib.optionals enableCuda [
+    cudaPackages.cuda_nvcc
   ] ++ lib.optionals (enableRocm || enableCuda) [
     makeWrapper
     autoAddDriverRunpath
@@ -163,6 +163,8 @@ goBuild ((lib.optionalAttrs enableRocm {
     (rocmLibs ++ [ libdrm ])
   ++ lib.optionals enableCuda [
     cudaPackages.cuda_cudart
+    cudaPackages.cuda_cccl
+    cudaPackages.libcublas
   ] ++ lib.optionals stdenv.isDarwin
     metalFrameworks;
 
