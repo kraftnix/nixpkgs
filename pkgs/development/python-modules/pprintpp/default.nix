@@ -3,10 +3,9 @@
   buildPythonPackage,
   fetchpatch,
   fetchPypi,
+  nose,
   parameterized,
   pytestCheckHook,
-  pynose,
-  python,
   pythonOlder,
   setuptools,
 }:
@@ -40,8 +39,8 @@ buildPythonPackage rec {
   build-system = [ setuptools ];
 
   nativeCheckInputs = [
+    nose
     parameterized
-    pynose
     pytestCheckHook
   ];
 

@@ -21,7 +21,7 @@
 , qmake
 , qtbase
 , qtwayland
-, speechd
+, speechd-minimal
 , sqlite
 , wrapQtAppsHook
 , xdg-utils
@@ -33,11 +33,11 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "calibre";
-  version = "7.12.0";
+  version = "7.15.0";
 
   src = fetchurl {
     url = "https://download.calibre-ebook.com/${finalAttrs.version}/calibre-${finalAttrs.version}.tar.xz";
-    hash = "sha256-XHkORTUx3+O+i2vbTiZAHI/0hY3xPIXvvNAVuXy4wzk=";
+    hash = "sha256-03CRYdi5dX3+S+o4wDehsFzI36AGLAF5e/TtfmYmBis=";
   };
 
   patches = [
@@ -132,7 +132,7 @@ stdenv.mkDerivation (finalAttrs: {
       ] ++ lib.optional (unrarSupport) unrardll)
     )
     xdg-utils
-  ] ++ lib.optional (speechSupport) speechd;
+  ] ++ lib.optional (speechSupport) speechd-minimal;
 
   installPhase = ''
     runHook preInstall

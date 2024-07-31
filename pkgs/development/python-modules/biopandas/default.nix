@@ -5,10 +5,11 @@
   setuptools,
   looseversion,
   mmtf-python,
+  nose,
   numpy,
   pandas,
-  pynose,
   pytestCheckHook,
+  pythonOlder,
 }:
 
 buildPythonPackage rec {
@@ -23,7 +24,6 @@ buildPythonPackage rec {
     hash = "sha256-1c78baBBsDyvAWrNx5mZI/Q75wyXv0DAwAdWm3EwX/I=";
   };
 
-
   pythonRelaxDeps = [ "looseversion" ];
 
   build-system = [ setuptools ];
@@ -36,7 +36,7 @@ buildPythonPackage rec {
   ];
 
   nativeCheckInputs = [
-    pynose
+    nose
     pytestCheckHook
   ];
 

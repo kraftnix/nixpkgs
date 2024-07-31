@@ -155,8 +155,6 @@ stdenv.mkDerivation (finalAttrs: {
     patchShebangs tests/whitespace/check_whitespace.py
   '';
 
-  strictDeps = true;
-
   nativeBuildInputs = [
     cmake
     glib # populates GSETTINGS_SCHEMAS_PATH
@@ -208,7 +206,7 @@ stdenv.mkDerivation (finalAttrs: {
     lomiri-settings-components
     lomiri-thumbnailer
     qtmultimedia
-    # telephony-service # currently broken: https://github.com/NixOS/nixpkgs/pull/314043
+    telephony-service
   ];
 
   nativeCheckInputs = [
