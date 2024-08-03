@@ -83,7 +83,7 @@ let
       extraDrvConfig = mkOption {
         type = types.nullOr types.package;
         default = null;
-        description = lib.mdDoc ''
+        description = ''
           Extra config for an nspawn-unit that is generated via `nix-build`.
           This is necessary since nspawn doesn't support overrides in
           `/etc/systemd/nspawn` natively and sometimes a derivation
