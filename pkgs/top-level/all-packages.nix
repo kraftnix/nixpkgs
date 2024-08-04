@@ -891,7 +891,7 @@ with pkgs;
   buildDotnetModule = callPackage ../build-support/dotnet/build-dotnet-module { };
   nuget-to-nix = callPackage ../build-support/dotnet/nuget-to-nix { };
   mkNugetSource = callPackage ../build-support/dotnet/make-nuget-source { };
-  mkNugetDeps = callPackage ../build-support/dotnet/make-nuget-deps { };
+  mkNugetDeps = (newScope dotnetCorePackages) ../build-support/dotnet/make-nuget-deps { };
 
   buildDotnetGlobalTool = callPackage ../build-support/dotnet/build-dotnet-global-tool { };
 
@@ -2179,7 +2179,9 @@ with pkgs;
 
   conform = callPackage ../applications/version-management/conform { };
 
-  datalad = callPackage ../applications/version-management/datalad { };
+  datalad = with python3Packages; toPythonApplication datalad;
+
+  datalad-gooey = with python3Packages; toPythonApplication datalad-gooey;
 
   darcs-to-git = callPackage ../applications/version-management/darcs-to-git { };
 
@@ -2188,6 +2190,8 @@ with pkgs;
   delta = darwin.apple_sdk_11_0.callPackage ../applications/version-management/delta { };
 
   diff-so-fancy = callPackage ../applications/version-management/diff-so-fancy { };
+
+  forgejo-lts = callPackage ../by-name/fo/forgejo/lts.nix { };
 
   gex = callPackage ../applications/version-management/gex {
     inherit (darwin.apple_sdk.frameworks) Security;
@@ -3290,8 +3294,6 @@ with pkgs;
 
   aws-lambda-rie = callPackage ../tools/admin/aws-lambda-runtime-interface-emulator { };
 
-  aws-google-auth = python3Packages.callPackage ../tools/admin/aws-google-auth { };
-
   aws-mfa = python3Packages.callPackage ../tools/admin/aws-mfa { };
 
   aws-nuke = callPackage ../tools/admin/aws-nuke { };
@@ -3811,8 +3813,6 @@ with pkgs;
   hakrawler = callPackage ../tools/security/hakrawler { };
 
   harsh = callPackage ../applications/misc/harsh { };
-
-  harvid = callPackage ../tools/video/harvid { };
 
   headset = callPackage ../applications/audio/headset { };
 
@@ -6124,6 +6124,10 @@ with pkgs;
 
   statserial = callPackage ../tools/misc/statserial { };
 
+  steampipePackages = recurseIntoAttrs (
+    callPackage ../tools/misc/steampipe-packages { }
+  );
+
   step-ca = callPackage ../tools/security/step-ca {
     inherit (darwin.apple_sdk.frameworks) PCSC;
   };
@@ -7592,7 +7596,7 @@ with pkgs;
   easeprobe = callPackage ../tools/misc/easeprobe { };
 
   emscripten = callPackage ../development/compilers/emscripten {
-    llvmPackages = llvmPackages_git;
+    llvmPackages = llvmPackages_19;
   };
 
   emscriptenPackages = recurseIntoAttrs (callPackage ./emscripten-packages.nix { });
@@ -7719,8 +7723,6 @@ with pkgs;
   expliot = callPackage ../tools/security/expliot { };
 
   Fabric = with python3Packages; toPythonApplication fabric;
-
-  fail2ban = callPackage ../tools/security/fail2ban { };
 
   fakeroot = callPackage ../tools/system/fakeroot { };
 
@@ -8355,9 +8357,6 @@ with pkgs;
   goofys = callPackage ../tools/filesystems/goofys { };
 
   go-sct = callPackage ../tools/X11/go-sct { };
-
-  # rename to upower-notify?
-  go-upower-notify = callPackage ../tools/misc/upower-notify { };
 
   goattracker = callPackage ../applications/audio/goattracker { };
 
@@ -9146,8 +9145,6 @@ with pkgs;
   jazzy = callPackage ../development/tools/jazzy { };
 
   jc = with python3Packages; toPythonApplication jc;
-
-  jcli = callPackage ../development/tools/misc/jcli { };
 
   jd-cli = callPackage ../tools/security/jd-cli { };
 
@@ -11697,7 +11694,7 @@ with pkgs;
 
   pngquant = callPackage ../tools/graphics/pngquant { };
 
-  inherit (callPackages ../development/tools/pnpm { })
+  inherit (callPackage ../development/tools/pnpm { })
     pnpm_8 pnpm_9;
   pnpm = pnpm_9;
 
@@ -13574,8 +13571,6 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) Security;
   };
 
-  txtpbfmt = callPackage ../development/tools/txtpbfmt { };
-
   ipbt = callPackage ../tools/misc/ipbt { };
 
   tuckr = callPackage ../applications/misc/tuckr { };
@@ -14805,19 +14800,9 @@ with pkgs;
   temurin-bin-21 = javaPackages.compiler.temurin-bin.jdk-21;
   temurin-jre-bin-21 = javaPackages.compiler.temurin-bin.jre-21;
 
-  temurin-bin-20 = javaPackages.compiler.temurin-bin.jdk-20;
-  temurin-jre-bin-20 = javaPackages.compiler.temurin-bin.jre-20;
-
-  temurin-bin-19 = javaPackages.compiler.temurin-bin.jdk-19;
-  temurin-jre-bin-19 = javaPackages.compiler.temurin-bin.jre-19;
-
-  temurin-bin-18 = javaPackages.compiler.temurin-bin.jdk-18;
-  temurin-jre-bin-18 = javaPackages.compiler.temurin-bin.jre-18;
-
   temurin-bin-17 = javaPackages.compiler.temurin-bin.jdk-17;
   temurin-jre-bin-17 = javaPackages.compiler.temurin-bin.jre-17;
 
-  temurin-bin-16 = javaPackages.compiler.temurin-bin.jdk-16;
   temurin-bin-11 = javaPackages.compiler.temurin-bin.jdk-11;
   temurin-jre-bin-11 = javaPackages.compiler.temurin-bin.jre-11;
   temurin-bin-8 = javaPackages.compiler.temurin-bin.jdk-8;
@@ -14830,8 +14815,6 @@ with pkgs;
   semeru-jre-bin-21 = javaPackages.compiler.semeru-bin.jre-21;
   semeru-bin-17 = javaPackages.compiler.semeru-bin.jdk-17;
   semeru-jre-bin-17 = javaPackages.compiler.semeru-bin.jre-17;
-  semeru-bin-16 = javaPackages.compiler.semeru-bin.jdk-16;
-  semeru-jre-bin-16 = javaPackages.compiler.semeru-bin.jre-16;
   semeru-bin-11 = javaPackages.compiler.semeru-bin.jdk-11;
   semeru-jre-bin-11 = javaPackages.compiler.semeru-bin.jre-11;
   semeru-bin-8 = javaPackages.compiler.semeru-bin.jdk-8;
@@ -15017,7 +15000,6 @@ with pkgs;
 
   corretto11 = javaPackages.compiler.corretto11;
   corretto17 = javaPackages.compiler.corretto17;
-  corretto19 = javaPackages.compiler.corretto19;
   corretto21 = javaPackages.compiler.corretto21;
 
   cotton = callPackage ../development/tools/cotton {
@@ -15752,7 +15734,7 @@ with pkgs;
 
   hugs = callPackage ../development/interpreters/hugs { };
 
-  inherit (javaPackages) openjfx11 openjfx17 openjfx19 openjfx20 openjfx21 openjfx22;
+  inherit (javaPackages) openjfx11 openjfx17 openjfx21 openjfx22;
   openjfx = openjfx17;
 
   openjdk8-bootstrap = javaPackages.compiler.openjdk8-bootstrap;
@@ -15774,16 +15756,6 @@ with pkgs;
   openjdk17_headless = javaPackages.compiler.openjdk17.headless;
   jdk17 = openjdk17;
   jdk17_headless = openjdk17_headless;
-
-  openjdk19 = javaPackages.compiler.openjdk19;
-  openjdk19_headless = javaPackages.compiler.openjdk19.headless;
-  jdk19 = openjdk19;
-  jdk19_headless = openjdk19_headless;
-
-  openjdk20 = javaPackages.compiler.openjdk20;
-  openjdk20_headless = javaPackages.compiler.openjdk20.headless;
-  jdk20 = openjdk20;
-  jdk20_headless = openjdk20_headless;
 
   openjdk21 = javaPackages.compiler.openjdk21;
   openjdk21_headless = javaPackages.compiler.openjdk21.headless;
@@ -15999,6 +15971,13 @@ with pkgs;
     lldb_18 = llvmPackages_18.lldb;
     llvm_18 = llvmPackages_18.llvm;
 
+    llvmPackages_19 = llvmPackagesSet."19";
+    clang_19 = llvmPackages_19.clang;
+    lld_19 = llvmPackages_19.lld;
+    lldb_19 = llvmPackages_19.lldb;
+    llvm_19 = llvmPackages_19.llvm;
+    bolt_19 = llvmPackages_19.bolt;
+
     llvmPackages_git = llvmPackagesSet.git;
   }) llvmPackages_13
     llvmPackages_14
@@ -16010,6 +15989,12 @@ with pkgs;
     lld_18
     lldb_18
     llvm_18
+    llvmPackages_19
+    clang_19
+    lld_19
+    lldb_19
+    llvm_19
+    bolt_19
     llvmPackages_git;
 
   lorri = callPackage ../tools/misc/lorri {
@@ -17185,7 +17170,6 @@ with pkgs;
     ffmpeg = ffmpeg-headless;
   };
 
-  pipewire_0_2 = callPackage ../development/libraries/pipewire/0.2.nix { };
   wireplumber = callPackage ../development/libraries/pipewire/wireplumber.nix { };
 
   pw-volume = callPackage ../tools/audio/pw-volume { };
@@ -23802,10 +23786,6 @@ with pkgs;
 
   rustc-demangle = callPackage ../development/libraries/rustc-demangle { };
 
-  rustls-ffi = callPackage ../development/libraries/rustls-ffi {
-    inherit (darwin.apple_sdk.frameworks) Security;
-  };
-
   s2geometry = callPackage ../development/libraries/s2geometry { };
 
   safefile = callPackage ../development/libraries/safefile { };
@@ -26786,8 +26766,6 @@ with pkgs;
 
   linuxConsoleTools = callPackage ../os-specific/linux/consoletools { };
 
-  linux-wifi-hotspot = callPackage ../os-specific/linux/linux-wifi-hotspot { };
-
   linthesia = callPackage ../games/linthesia/default.nix { };
 
   libreelec-dvb-firmware = callPackage ../os-specific/linux/firmware/libreelec-dvb-firmware { };
@@ -27321,9 +27299,10 @@ with pkgs;
   # See `xenPackages` source for explanations.
   # Building with `xen` instead of `xen-slim` is possible, but makes no sense.
   qemu_xen = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xen-slim; });
-  qemu_xen-light = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xen-light; });
-  qemu_xen_4_15 = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xen_4_15-slim; });
-  qemu_xen_4_15-light = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xen_4_15-light; });
+  qemu_xen_4_19 = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xenPackages.xen_4_19-slim; });
+  qemu_xen_4_18 = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xenPackages.xen_4_18-slim; });
+  qemu_xen_4_17 = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xenPackages.xen_4_17-slim; });
+  qemu_xen_4_16 = lowPrio (qemu.override { hostCpuOnly = true; xenSupport = true; xen = xenPackages.xen_4_16-slim; });
 
   qemu_test = lowPrio (qemu.override { hostCpuOnly = true; nixosTestRunner = true; });
 
@@ -27371,8 +27350,6 @@ with pkgs;
   rtl8192su-firmware = callPackage ../os-specific/linux/firmware/rtl8192su-firmware { };
 
   rtl8761b-firmware = callPackage ../os-specific/linux/firmware/rtl8761b-firmware { };
-
-  rtw88-firmware = callPackage ../os-specific/linux/firmware/rtw88-firmware { };
 
   rvvm = callPackage ../applications/virtualization/rvvm { };
 
@@ -29721,9 +29698,8 @@ with pkgs;
 
   daktilo = callPackage ../tools/misc/daktilo { };
 
-  # TODO(@sternenseemann): remove ghc version special casing when haskellPackages has caught up
   darcs = haskell.lib.compose.disableCabalFlag "library"
-    (haskell.lib.compose.justStaticExecutables haskell.packages.ghc966.darcs);
+    (haskell.lib.compose.justStaticExecutables haskellPackages.darcs);
 
   darkman = callPackage ../applications/misc/darkman { };
 
@@ -31197,8 +31173,7 @@ with pkgs;
   inherit (callPackages ../development/libraries/wlroots {})
     wlroots_0_16
     wlroots_0_17
-    wlroots_0_18
-    wlroots;
+    wlroots_0_18;
 
   sway-contrib = recurseIntoAttrs (callPackages ../applications/misc/sway-contrib { });
 
@@ -32115,7 +32090,7 @@ with pkgs;
   mediaelch-qt5 = libsForQt5.callPackage ../applications/misc/mediaelch { };
   mediaelch-qt6 = qt6Packages.callPackage ../applications/misc/mediaelch { };
 
-  mediathekview = callPackage ../applications/video/mediathekview { jre = temurin-bin-20; };
+  mediathekview = callPackage ../applications/video/mediathekview { };
 
   meteo = callPackage ../applications/networking/weather/meteo { };
 
@@ -32770,8 +32745,6 @@ with pkgs;
 
   mythtv = libsForQt5.callPackage ../applications/video/mythtv { };
 
-  micro = callPackage ../applications/editors/micro { };
-
   mle = callPackage ../applications/editors/mle { };
 
   namaka = callPackage ../development/tools/misc/namaka { };
@@ -33321,7 +33294,8 @@ with pkgs;
 
   qmediathekview = libsForQt5.callPackage ../applications/video/qmediathekview { };
 
-  qmplay2 = libsForQt5.callPackage ../applications/video/qmplay2 { };
+  qmplay2-qt5 = qmplay2.override { qtVersion = "5"; };
+  qmplay2-qt6 = qmplay2.override { qtVersion = "6"; };
 
   qmidiarp = callPackage ../applications/audio/qmidiarp { };
 
@@ -33743,7 +33717,7 @@ with pkgs;
 
   viber = callPackage ../applications/networking/instant-messengers/viber { };
 
-  wavebox = libsForQt5.callPackage ../applications/networking/instant-messengers/wavebox { };
+  wavebox = callPackage ../applications/networking/instant-messengers/wavebox { };
 
   sonic-pi = libsForQt5.callPackage ../applications/audio/sonic-pi { };
 
@@ -34339,7 +34313,9 @@ with pkgs;
 
   trayer = callPackage ../applications/window-managers/trayer { };
 
-  tinywl = callPackage ../applications/window-managers/tinywl { };
+  tinywl = callPackage ../applications/window-managers/tinywl {
+    wlroots = wlroots_0_18;
+  };
 
   tree-from-tags = callPackage ../applications/audio/tree-from-tags { };
 
@@ -35028,13 +35004,8 @@ with pkgs;
 
   xenPackages = recurseIntoAttrs (callPackage ../applications/virtualization/xen/packages.nix {});
 
-  xen = xenPackages.xen-vanilla;
+  xen = xenPackages.xen;
   xen-slim = xenPackages.xen-slim;
-  xen-light = xenPackages.xen-light;
-
-  xen_4_15 = xenPackages.xen_4_15-vanilla;
-  xen_4_15-slim = xenPackages.xen_4_15-slim;
-  xen_4_15-light = xenPackages.xen_4_15-light;
 
   xkbset = callPackage ../tools/X11/xkbset { };
 
@@ -35809,6 +35780,10 @@ with pkgs;
   armagetronad-dedicated = callPackage ../games/armagetronad { dedicatedServer = true; };
 
   arena = callPackage ../games/arena { };
+
+  art = callPackage ../by-name/ar/art/package.nix {
+    fftw = fftwSinglePrec;
+  };
 
   arx-libertatis = libsForQt5.callPackage ../games/arx-libertatis { };
 
@@ -38415,8 +38390,6 @@ with pkgs;
   brightnessctl = callPackage ../misc/brightnessctl { };
 
   calaos_installer = libsForQt5.callPackage ../misc/calaos/installer { };
-
-  civo = callPackage ../applications/networking/cluster/civo { };
 
   click = callPackage ../applications/networking/cluster/click { };
 

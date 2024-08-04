@@ -8421,12 +8421,25 @@
     githubId = 6109326;
     name = "David Hummel";
   };
+  husky = {
+    email = "husky@husky.sh";
+    github = "huskyistaken";
+    githubId = 20684258;
+    name = "Luna Perego";
+    keys = [ { fingerprint = "09E4 B981 9B93 5B0C 0B91  1274 0578 7332 9217 08FF"; } ];
+  };
   huyngo = {
     email = "huyngo@disroot.org";
     github = "Huy-Ngo";
     name = "Ngô Ngọc Đức Huy";
     githubId = 19296926;
     keys = [ { fingerprint = "DF12 23B1 A9FD C5BE 3DA5  B6F7 904A F1C7 CDF6 95C3"; } ];
+  };
+  hxtmdev = {
+    email = "daniel@hxtm.dev";
+    name = "Daniel Höxtermann";
+    github = "hxtmdev";
+    githubId = 7771007;
   };
   hypersw = {
     email = "baltic@hypersw.net";
@@ -16020,6 +16033,11 @@
     githubId = 1830959;
     name = "Piper McCorkle";
   };
+  pitkling = {
+    github = "pitkling";
+    githubId = 1018801;
+    name = "Peter Kling";
+  };
   piturnah = {
     email = "peterhebden6@gmail.com";
     github = "Piturnah";
@@ -21311,6 +21329,12 @@
     github = "vcanadi";
     githubId = 8889722;
     name = "Vitomir Čanadi";
+  };
+  vcele = {
+    email = "ejycebfx@duck.com";
+    github = "Vcele";
+    githubId = 101071881;
+    name = "Victor";
   };
   vcunat = {
     name = "Vladimír Čunát";
