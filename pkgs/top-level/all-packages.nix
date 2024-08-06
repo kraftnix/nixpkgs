@@ -334,8 +334,6 @@ with pkgs;
 
   bakelite = callPackage ../tools/backup/bakelite { };
 
-  bazecor = callPackage ../applications/misc/bazecor { };
-
   bearer = callPackage ../development/tools/bearer { };
 
   benthos = callPackage ../development/tools/benthos { };
@@ -1785,15 +1783,9 @@ with pkgs;
 
   gfshare = callPackage ../tools/security/gfshare { };
 
-  gh-actions-cache = callPackage ../tools/misc/gh-actions-cache { };
-
   gh-cal = callPackage ../tools/misc/gh-cal {
     inherit (darwin.apple_sdk.frameworks) Security;
   };
-
-  gh-dash = callPackage ../tools/misc/gh-dash { };
-
-  gh-markdown-preview = callPackage ../tools/misc/gh-markdown-preview { };
 
   ghostie = callPackage ../tools/misc/ghostie { };
 
@@ -2542,8 +2534,6 @@ with pkgs;
     unfreeEnableDiscord = true;
   };
 
-  attract-mode = callPackage ../applications/emulators/attract-mode { };
-
   basiliskii = callPackage ../applications/emulators/basiliskii { };
 
   box64 = callPackage ../applications/emulators/box64 {
@@ -2992,8 +2982,6 @@ with pkgs;
   };
 
   sakura = callPackage ../applications/terminal-emulators/sakura { };
-
-  scriv = callPackage ../applications/version-management/scriv { };
 
   st = callPackage ../applications/terminal-emulators/st {
     conf = config.st.conf or null;
@@ -4464,8 +4452,6 @@ with pkgs;
 
   cbftp = callPackage ../tools/networking/cbftp { };
 
-  cddl = callPackage ../development/tools/cddl { };
-
   cedille = callPackage ../applications/science/logic/cedille
                           { inherit (haskellPackages) alex happy Agda ghcWithPackages;
                           };
@@ -4654,9 +4640,7 @@ with pkgs;
 
   wl-mirror = callPackage ../tools/wayland/wl-mirror { };
 
-  wl-screenrec = callPackage ../tools/wayland/wl-screenrec {
-    ffmpeg = ffmpeg_6;
-  };
+  wl-screenrec = callPackage ../tools/wayland/wl-screenrec { };
 
   wleave = callPackage ../tools/wayland/wleave { };
 
@@ -6896,7 +6880,7 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) CoreServices;
   };
 
-  cobang = python3Packages.callPackage ../applications/misc/cobang {
+  cobang = python311Packages.callPackage ../applications/misc/cobang {
     gst-plugins-good = gst_all_1.gst-plugins-good.override { gtkSupport = true; };
   };
 
@@ -7514,12 +7498,6 @@ with pkgs;
   uutils-coreutils-noprefix = uutils-coreutils.override { prefix = null; };
 
   volctl = callPackage ../tools/audio/volctl { };
-
-  volk = if (stdenv.isDarwin && stdenv.isAarch64) then
-    (callPackage ../development/libraries/volk/2.5.0.nix { })
-  else
-    (callPackage ../development/libraries/volk { })
-  ;
 
   vorta = qt6Packages.callPackage ../applications/backup/vorta { };
 
@@ -11712,8 +11690,6 @@ with pkgs;
 
   podman-compose = python3Packages.callPackage ../applications/virtualization/podman-compose { };
 
-  podman-tui = callPackage ../applications/virtualization/podman-tui { };
-
   podman-desktop = callPackage ../applications/virtualization/podman-desktop {};
 
   pods = callPackage ../applications/virtualization/pods { };
@@ -12046,10 +12022,6 @@ with pkgs;
   quilt = callPackage ../development/tools/quilt { };
 
   raider = callPackage ../applications/misc/raider { };
-
-  railway = callPackage ../development/tools/railway {
-    inherit (darwin.apple_sdk.frameworks) CoreServices Security SystemConfiguration;
-  };
 
   quota = if stdenv.isLinux then linuxquota else unixtools.quota;
 
@@ -15977,8 +15949,6 @@ with pkgs;
     lldb_19 = llvmPackages_19.lldb;
     llvm_19 = llvmPackages_19.llvm;
     bolt_19 = llvmPackages_19.bolt;
-
-    llvmPackages_git = llvmPackagesSet.git;
   }) llvmPackages_13
     llvmPackages_14
     llvmPackages_15
@@ -15994,8 +15964,7 @@ with pkgs;
     lld_19
     lldb_19
     llvm_19
-    bolt_19
-    llvmPackages_git;
+    bolt_19;
 
   lorri = callPackage ../tools/misc/lorri {
     inherit (darwin.apple_sdk.frameworks) CoreServices Security;
@@ -26436,7 +26405,12 @@ with pkgs;
 
   bridge-utils = callPackage ../os-specific/linux/bridge-utils { };
 
-  busybox = callPackage ../os-specific/linux/busybox { };
+  busybox = callPackage ../os-specific/linux/busybox {
+    # Fixes libunwind from being dynamically linked to a static binary.
+    stdenv = if (stdenv.targetPlatform.useLLVM or false) then
+      overrideCC stdenv buildPackages.llvmPackages.clangNoLibcxx
+    else stdenv;
+  };
   busybox-sandbox-shell = callPackage ../os-specific/linux/busybox/sandbox-shell.nix {
     # musl roadmap has RISC-V support projected for 1.1.20
     busybox = if !stdenv.hostPlatform.isRiscV && !stdenv.hostPlatform.isLoongArch64 && stdenv.hostPlatform.libc != "bionic"
@@ -28429,8 +28403,6 @@ with pkgs;
     '';
   };
 
-  nuclear = callPackage ../applications/audio/nuclear { };
-
   nuclei = callPackage ../tools/security/nuclei { };
 
   nullmailer = callPackage ../servers/mail/nullmailer {
@@ -30285,43 +30257,11 @@ with pkgs;
       };
     };
   };
-  gnuradio3_9 = callPackage ../applications/radio/gnuradio/wrapper.nix {
-    unwrapped = callPackage ../applications/radio/gnuradio/3.9.nix {
-      inherit (darwin.apple_sdk.frameworks) CoreAudio;
-      python = python311;
-    };
-  };
-  gnuradio3_9Packages = lib.recurseIntoAttrs gnuradio3_9.pkgs;
-  # A build without gui components and other utilites not needed for end user
-  # libraries
-  gnuradio3_9Minimal = gnuradio.override {
-    doWrap = false;
-    unwrapped = gnuradio.unwrapped.override {
-      volk = volk.override {
-        # So it will not reference python
-        enableModTool = false;
-      };
-      uhd = uhdMinimal;
-      features = {
-        gnuradio-companion = false;
-        python-support = false;
-        examples = false;
-        gr-qtgui = false;
-        gr-utils = false;
-        gr-modtool = false;
-        gr-blocktool = false;
-        sphinx = false;
-        doxygen = false;
-        # Doesn't make it reference python eventually, but makes reverse
-        # depdendencies require python to use cmake files of GR.
-        gr-ctrlport = false;
-      };
-    };
-  };
   gnuradio3_8 = callPackage ../applications/radio/gnuradio/wrapper.nix {
     unwrapped = callPackage ../applications/radio/gnuradio/3.8.nix ({
       inherit (darwin.apple_sdk.frameworks) CoreAudio;
       python = python311;
+      volk = volk_2;
     } // lib.optionalAttrs stdenv.isLinux {
       stdenv = pkgs.stdenvAdapters.useLibsFrom stdenv pkgs.gcc12Stdenv;
     });
@@ -30332,7 +30272,7 @@ with pkgs;
   gnuradio3_8Minimal = gnuradio3_8.override {
     doWrap = false;
     unwrapped = gnuradio3_8.unwrapped.override {
-      volk = volk.override {
+      volk = volk_2.override {
         enableModTool = false;
       };
       uhd = uhdMinimal;
@@ -30469,8 +30409,6 @@ with pkgs;
   feh = callPackage ../applications/graphics/feh {
     imlib2 = imlib2Full;
   };
-
-  feishin = callPackage ../applications/audio/feishin { };
 
   feishu = callPackage ../applications/networking/instant-messengers/feishu { };
 
@@ -32344,7 +32282,12 @@ with pkgs;
 
   rofi-calc = callPackage ../applications/science/math/rofi-calc { };
 
-  rofi-emoji = callPackage ../applications/misc/rofi-emoji { };
+  rofi-emoji = (callPackage ../applications/misc/rofi-emoji { }).v3;
+  rofi-emoji-wayland = (
+    callPackage ../applications/misc/rofi-emoji {
+      rofi-unwrapped = rofi-wayland-unwrapped;
+    }
+  ).v4;
 
   rofi-file-browser = callPackage ../applications/misc/rofi-file-browser { };
 
@@ -37325,8 +37268,6 @@ with pkgs;
 
   svaba = callPackage ../applications/science/biology/svaba { };
 
-  tandem-aligner = callPackage ../applications/science/biology/tandem-aligner { };
-
   tebreak = callPackage ../applications/science/biology/tebreak { };
 
   treemix = callPackage ../applications/science/biology/treemix { };
@@ -37460,8 +37401,6 @@ with pkgs;
   scalapack = callPackage ../development/libraries/science/math/scalapack { };
 
   rankwidth = callPackage ../development/libraries/science/math/rankwidth { };
-
-  latte-integrale = callPackage ../development/libraries/science/math/latte-integrale { };
 
   lcalc = callPackage ../development/libraries/science/math/lcalc { };
 
@@ -39931,6 +39870,10 @@ with pkgs;
       };
     };
   };
+
+  compressDrv = callPackage ../build-support/compress-drv { };
+
+  compressDrvWeb = callPackage ../build-support/compress-drv/web.nix { };
 
   duti = callPackage ../os-specific/darwin/duti {
     inherit (darwin.apple_sdk.frameworks) ApplicationServices;
