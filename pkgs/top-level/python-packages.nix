@@ -613,8 +613,6 @@ self: super: with self; {
 
   ansible-kernel = callPackage ../development/python-modules/ansible-kernel { };
 
-  ansible-navigator = callPackage ../development/python-modules/ansible-navigator { };
-
   ansible-pylibssh = callPackage ../development/python-modules/ansible-pylibssh { };
 
   ansible-runner = callPackage ../development/python-modules/ansible-runner { };
@@ -2377,6 +2375,8 @@ self: super: with self; {
     inherit (pkgs) cmigemo;
   };
 
+  cmsdials = callPackage ../development/python-modules/cmsdials { };
+
   cmsis-pack-manager = callPackage ../development/python-modules/cmsis-pack-manager { };
 
   cmsis-svd = callPackage ../development/python-modules/cmsis-svd { };
@@ -2696,8 +2696,14 @@ self: super: with self; {
 
   cufflinks = callPackage ../development/python-modules/cufflinks { };
 
-  # cupy 12.2.0 possibly incompatible with cutensor 2.0 that comes with cudaPackages_12
-  cupy = callPackage ../development/python-modules/cupy { cudaPackages = pkgs.cudaPackages_11; };
+  cupy = callPackage ../development/python-modules/cupy {
+    # cupy 12.2.0 possibly incompatible with cutensor 2.0 that comes with cudaPackages_12
+    cudaPackages = pkgs.cudaPackages_11.overrideScope (cu-fi: _: {
+      # CuDNN 9 is not supported:
+      # https://github.com/cupy/cupy/issues/8215
+      cudnn = cu-fi.cudnn_8_9;
+    });
+  };
 
   curio = callPackage ../development/python-modules/curio { };
 
@@ -5545,6 +5551,8 @@ self: super: with self; {
 
   highdicom = callPackage ../development/python-modules/highdicom { };
 
+  highspy = callPackage ../development/python-modules/highspy { };
+
   hid = callPackage ../development/python-modules/hid {
     inherit (pkgs) hidapi;
   };
@@ -6353,6 +6361,8 @@ self: super: with self; {
 
   json-merge-patch = callPackage ../development/python-modules/json-merge-patch { };
 
+  json-repair = callPackage ../development/python-modules/json-repair { };
+
   json-schema-for-humans = callPackage ../development/python-modules/json-schema-for-humans { };
 
   json-stream = callPackage ../development/python-modules/json-stream { };
@@ -6886,11 +6896,6 @@ self: super: with self; {
     inherit (pkgs) libgpiod;
   };
 
-  libgpuarray = callPackage ../development/python-modules/libgpuarray {
-    clblas = pkgs.clblas.override { inherit (self) boost; };
-    inherit (pkgs.config) cudaSupport;
-  };
-
   libgravatar = callPackage ../development/python-modules/libgravatar { };
 
   libiio = (toPythonModule (pkgs.libiio.override {
@@ -7283,6 +7288,8 @@ self: super: with self; {
   losant-rest = callPackage ../development/python-modules/losant-rest { };
 
   lottie = callPackage ../development/python-modules/lottie { };
+
+  lox = callPackage ../development/python-modules/lox { };
 
   lpc-checksum = callPackage ../development/python-modules/lpc-checksum { };
 
@@ -9244,6 +9251,8 @@ self: super: with self; {
   numpy_2 = callPackage ../development/python-modules/numpy/2.nix { };
   numpy = if self.pythonOlder "3.13" then numpy_1 else numpy_2;
 
+  numpy-groupies = callPackage ../development/python-modules/numpy-groupies { };
+
   numpy-stl = callPackage ../development/python-modules/numpy-stl { };
 
   numpyro = callPackage ../development/python-modules/numpyro { };
@@ -9251,6 +9260,8 @@ self: super: with self; {
   nunavut = callPackage ../development/python-modules/nunavut { };
 
   nutils = callPackage ../development/python-modules/nutils { };
+
+  nutils-poly = callPackage ../development/python-modules/nutils-poly { };
 
   nvchecker = callPackage ../development/python-modules/nvchecker { };
 
@@ -9894,6 +9905,8 @@ self: super: with self; {
   pdfx = callPackage ../development/python-modules/pdfx { };
 
   pdm-backend = callPackage ../development/python-modules/pdm-backend { };
+
+  pdm-build-locked = callPackage ../development/python-modules/pdm-build-locked { };
 
   pdm-pep517 = callPackage ../development/python-modules/pdm-pep517 { };
 
@@ -11138,8 +11151,6 @@ self: super: with self; {
 
   pycomfoconnect = callPackage ../development/python-modules/pycomfoconnect { };
 
-  pycontracts = callPackage ../development/python-modules/pycontracts { };
-
   pycosat = callPackage ../development/python-modules/pycosat { };
 
   pycotap = callPackage ../development/python-modules/pycotap { };
@@ -11312,7 +11323,11 @@ self: super: with self; {
 
   pyefergy = callPackage ../development/python-modules/pyefergy { };
 
+  pyegps = callPackage ../development/python-modules/pyegps { };
+
   pyeight = callPackage ../development/python-modules/pyeight { };
+
+  pyelectra = callPackage ../development/python-modules/pyelectra { };
 
   pyelftools = callPackage ../development/python-modules/pyelftools { };
 
@@ -14868,8 +14883,6 @@ self: super: with self; {
 
   sqlalchemy-jsonfield = callPackage ../development/python-modules/sqlalchemy-jsonfield { };
 
-  sqlalchemy-migrate = callPackage ../development/python-modules/sqlalchemy-migrate { };
-
   sqlalchemy-mixins = callPackage ../development/python-modules/sqlalchemy-mixins { };
 
   sqlalchemy-utils = callPackage ../development/python-modules/sqlalchemy-utils { };
@@ -15295,8 +15308,6 @@ self: super: with self; {
   temperusb = callPackage ../development/python-modules/temperusb { };
 
   tempest = callPackage ../development/python-modules/tempest { };
-
-  tempita = callPackage ../development/python-modules/tempita { };
 
   templateflow = callPackage ../development/python-modules/templateflow { };
 
@@ -15724,6 +15735,8 @@ self: super: with self; {
     cudaPackages = pkgs.cudaPackages_12;
   };
 
+  torchcrepe = callPackage ../development/python-modules/torchcrepe { };
+
   torchdiffeq = callPackage ../development/python-modules/torchdiffeq { };
 
   torchmetrics = callPackage ../development/python-modules/torchmetrics { };
@@ -15903,6 +15916,8 @@ self: super: with self; {
   tskit = callPackage ../development/python-modules/tskit { };
 
   ttach = callPackage ../development/python-modules/ttach { };
+
+  ttfautohint-py = callPackage ../development/python-modules/ttfautohint-py { };
 
   ttls = callPackage ../development/python-modules/ttls { };
 

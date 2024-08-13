@@ -5108,8 +5108,6 @@ with pkgs;
 
   fioctl = callPackage ../tools/admin/fioctl { };
 
-  firecracker = callPackage ../applications/virtualization/firecracker { };
-
   firectl = callPackage ../applications/virtualization/firectl { };
 
   firestarter = callPackage ../applications/misc/firestarter { };
@@ -9633,8 +9631,6 @@ with pkgs;
 
   mdbook-cmdrun = callPackage ../tools/text/mdbook-cmdrun { };
 
-  mdbook-d2 = callPackage ../tools/text/mdbook-d2 { };
-
   mdbook-pagetoc = callPackage ../tools/text/mdbook-pagetoc { };
 
   mdbook-graphviz = callPackage ../tools/text/mdbook-graphviz {
@@ -10936,11 +10932,6 @@ with pkgs;
   };
 
   nzbget = callPackage ../tools/networking/nzbget { };
-
-  nzbhydra2 = callPackage ../servers/nzbhydra2 {
-    # Requires Java 17, not lower, not higher
-    jre = openjdk17;
-  };
 
   oapi-codegen = callPackage ../tools/networking/oapi-codegen { };
 
@@ -13550,12 +13541,6 @@ with pkgs;
   };
 
   tuptime = callPackage ../tools/system/tuptime { };
-
-  turbo = callPackage ../tools/misc/turbo/wrapper.nix { };
-
-  turbo-unwrapped = callPackage ../tools/misc/turbo {
-    inherit (darwin.apple_sdk_11_0.frameworks) IOKit CoreServices CoreFoundation;
-  };
 
   turses = callPackage ../applications/networking/instant-messengers/turses { };
 
@@ -16388,8 +16373,6 @@ with pkgs;
 
   svd2rust = callPackage ../development/tools/rust/svd2rust { };
 
-  svdtools = callPackage ../development/embedded/svdtools { };
-
   swiftPackages = recurseIntoAttrs (callPackage ../development/compilers/swift { });
   inherit (swiftPackages) swift swiftpm sourcekit-lsp swift-format swiftpm2nix;
 
@@ -17120,15 +17103,26 @@ with pkgs;
 
   sparkleshare = callPackage ../applications/version-management/sparkleshare { };
 
-  spidermonkey_78 = callPackage ../development/interpreters/spidermonkey/78.nix {
-    inherit (darwin) libobjc;
-  };
-  spidermonkey_91 = callPackage ../development/interpreters/spidermonkey/91.nix {
-    inherit (darwin) libobjc;
-  };
-  spidermonkey_115 = callPackage ../development/interpreters/spidermonkey/115.nix {
-    inherit (darwin) libobjc;
-  };
+  inherit
+    ({
+      spidermonkey_78 = callPackage ../development/interpreters/spidermonkey/78.nix {
+        inherit (darwin) libobjc;
+      };
+      spidermonkey_91 = callPackage ../development/interpreters/spidermonkey/91.nix {
+        inherit (darwin) libobjc;
+      };
+      spidermonkey_115 = callPackage ../development/interpreters/spidermonkey/115.nix {
+        inherit (darwin) libobjc;
+      };
+      spidermonkey_128 = callPackage ../development/interpreters/spidermonkey/128.nix {
+        inherit (darwin) libobjc;
+      };
+    })
+    spidermonkey_78
+    spidermonkey_91
+    spidermonkey_115
+    spidermonkey_128
+    ;
 
   starlark-rust = callPackage ../development/interpreters/starlark-rust { };
 
@@ -17340,8 +17334,6 @@ with pkgs;
   ansible-builder = with python3Packages; toPythonApplication ansible-builder;
 
   ansible-doctor = callPackage ../tools/admin/ansible/doctor.nix { };
-
-  ansible-navigator = with python3Packages; toPythonApplication ansible-navigator;
 
   dbus-test-runner = callPackage ../development/tools/dbus-test-runner { };
 
@@ -25180,8 +25172,6 @@ with pkgs;
 
   https-dns-proxy = callPackage ../servers/dns/https-dns-proxy { };
 
-  hydron = callPackage ../servers/hydron { };
-
   ic-keysmith = callPackage ../tools/security/ic-keysmith { };
 
   icecream = callPackage ../servers/icecream { };
@@ -32895,7 +32885,9 @@ with pkgs;
 
   phantomsocks = callPackage ../tools/networking/phantomsocks { };
 
-  photoqt = qt6Packages.callPackage ../applications/graphics/photoqt { };
+  photoqt = callPackage ../by-name/ph/photoqt/package.nix {
+    stdenv = if stdenv.isDarwin then overrideSDK stdenv "11.0" else stdenv;
+  };
 
   photoflare = libsForQt5.callPackage ../applications/graphics/photoflare { };
 
@@ -36258,8 +36250,6 @@ with pkgs;
 
   pysolfc = python3Packages.callPackage ../games/pysolfc { };
 
-  qq = callPackage ../applications/networking/instant-messengers/qq { };
-
   qqwing = callPackage ../games/qqwing { };
 
   quake3wrapper = callPackage ../games/quake3/wrapper { };
@@ -36859,14 +36849,6 @@ with pkgs;
   };
 
   octopus = callPackage ../applications/science/chemistry/octopus { };
-
-  openlp = libsForQt5.callPackage ../applications/misc/openlp { };
-  openlpFull = openlp.override {
-    pdfSupport = true;
-    presentationSupport = true;
-    vlcSupport = true;
-    gstreamerSupport = true;
-  };
 
   autodock-vina = callPackage ../applications/science/chemistry/autodock-vina { };
 
@@ -39686,8 +39668,6 @@ with pkgs;
   zimg = callPackage ../development/libraries/zimg { };
 
   wtf = callPackage ../applications/misc/wtf { };
-
-  zk-shell = callPackage ../applications/misc/zk-shell { };
 
   tora = libsForQt5.callPackage ../development/tools/tora { };
 

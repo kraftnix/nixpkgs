@@ -2544,6 +2544,13 @@
     githubId = 410028;
     name = "Tobias Bergkvist";
   };
+  berquist = {
+    name = "Eric Berquist";
+    email = "eric.berquist@gmail.com";
+    github = "berquist";
+    githubId = 727571;
+    keys = [ { fingerprint = "AAD4 3B70 A504 9675 CFC8  B101 BAFD 205D 5FA2 B329"; } ];
+  };
   berryp = {
     email = "berryphillips@gmail.com";
     github = "berryp";
@@ -9394,6 +9401,12 @@
     github = "JeffLabonte";
     githubId = 9425955;
     name = "Jean-François Labonté";
+  };
+  jemand771 = {
+    email = "willy@jemand771.net";
+    github = "jemand771";
+    githubId = 19669567;
+    name = "Willy";
   };
   jensbin = {
     email = "jensbin+git@pm.me";
@@ -16679,6 +16692,13 @@
     githubId = 23097564;
     name = "Nora Widdecke";
   };
+  pwnwriter = {
+    name = "Nabeen Tiwaree";
+    email = "hey@pwnwriter.xyz";
+    keys = [ { fingerprint = "B681 763F 9B5B DF27 9A13  9E0C 0544 A89B C519 20AA"; } ];
+    github = "pwnwriter";
+    githubId = 90331517;
+  };
   pwoelfel = {
     name = "Philipp Woelfel";
     email = "philipp.woelfel@gmail.com";
@@ -19717,6 +19737,12 @@
     github = "sudosubin";
     githubId = 32478597;
     name = "Subin Kim";
+  };
+  sugar700 = {
+    email = "sugar@sylveon.social";
+    github = "sugar700";
+    githubId = 168804988;
+    name = "sugar";
   };
   suhr = {
     email = "suhr@i2pmail.org";
