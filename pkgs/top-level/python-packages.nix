@@ -4651,14 +4651,6 @@ self: super: with self; {
 
   oelint-parser = callPackage ../development/python-modules/oelint-parser { };
 
-  openllm = callPackage ../development/python-modules/openllm {
-    triton = self.triton-cuda;
-  };
-
-  openllm-client = callPackage ../development/python-modules/openllm-client { };
-
-  openllm-core = callPackage ../development/python-modules/openllm-core { };
-
   openstep-parser = callPackage ../development/python-modules/openstep-parser { };
 
   openstep-plist = callPackage ../development/python-modules/openstep-plist { };
@@ -9388,6 +9380,8 @@ self: super: with self; {
 
   py-expression-eval = callPackage ../development/python-modules/py-expression-eval { };
 
+  py-machineid = callPackage ../development/python-modules/py-machineid { };
+
   py-opensonic = callPackage ../development/python-modules/py-opensonic { };
 
   py-radix-sr = callPackage ../development/python-modules/py-radix-sr { };
@@ -9753,7 +9747,9 @@ self: super: with self; {
 
   oslo-serialization = callPackage ../development/python-modules/oslo-serialization { };
 
-  oslo-utils = callPackage ../development/python-modules/oslo-utils { };
+  oslo-utils = callPackage ../development/python-modules/oslo-utils {
+    qemu = pkgs.qemu;
+  };
 
   oslotest = callPackage ../development/python-modules/oslotest { };
 
@@ -14803,6 +14799,8 @@ self: super: with self; {
   sparqlwrapper = callPackage ../development/python-modules/sparqlwrapper { };
 
   sparse = callPackage ../development/python-modules/sparse { };
+
+  sparsezoo = callPackage ../development/python-modules/sparsezoo { };
 
   spatial-image = callPackage ../development/python-modules/spatial-image { };
 
