@@ -19,6 +19,8 @@ stdenv.mkDerivation (finalAttrs: {
   # e.g. links to man pages, value constraints etc.
   version = "1.9.15p5";
 
+  __structuredAttrs = true;
+
   src = fetchurl {
     url = "https://www.sudo.ws/dist/sudo-${finalAttrs.version}.tar.gz";
     hash = "sha256-VY0QuaGZH7O5+n+nsH7EQFt677WzywsIcdvIHjqI5Vg=";
@@ -38,6 +40,7 @@ stdenv.mkDerivation (finalAttrs: {
     "--with-iologdir=/var/log/sudo-io"
     "--with-sendmail=${sendmailPath}"
     "--enable-tmpfiles.d=no"
+    "--with-passprompt=[sudo] password for %p: " # intentional trailing space
   ] ++ lib.optionals withInsults [
     "--with-insults"
     "--with-all-insults"
@@ -46,10 +49,6 @@ stdenv.mkDerivation (finalAttrs: {
     "--with-sssd-lib=${sssd}/lib"
   ] ++ lib.optionals withStaticSudoers [
     "--enable-static-sudoers"
-  ];
-
-  configureFlagsArray = [
-    "--with-passprompt=[sudo] password for %p: " # intentional trailing space
   ];
 
   postConfigure =

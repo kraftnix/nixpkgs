@@ -3812,6 +3812,12 @@
     githubId = 199180;
     name = "Claes Wallin";
   };
+  claes = {
+    email = "claes.holmerson@gmail.com";
+    github = "claes";
+    githubId = 43564;
+    name = "Claes Holmerson";
+  };
   clebs = {
     email = "borja.clemente@gmail.com";
     github = "clebs";
@@ -9258,6 +9264,12 @@
     github = "jankaifer";
     githubId = 12820484;
   };
+  janlikar = {
+    name = "Jan Likar";
+    email = "jan.likar@protonmail.com";
+    github = "janlikar";
+    githubId = 4228250;
+  };
   jansol = {
     email = "jan.solanti@paivola.fi";
     github = "jansol";
@@ -12284,6 +12296,12 @@
     githubId = 44469719;
     name = "Jussi Kuokkanen";
   };
+  lutzberger = {
+    email = "lutz.berger@airbus.com";
+    github = "lutzberger";
+    githubId = 115777584;
+    name = "Lutz Berger";
+  };
   lux = {
     email = "lux@lux.name";
     github = "luxzeitlos";
@@ -13172,6 +13190,13 @@
     github = "meatcar";
     githubId = 191622;
     name = "Denys Pavlov";
+  };
+  meator = {
+    email = "meator.dev@gmail.com";
+    github = "meator";
+    githubId = 67633081;
+    name = "meator";
+    keys = [ { fingerprint = "7B0F 58A5 E0F1 A2EA 1157  8A73 1A14 CB34 64CB E5BF"; } ];
   };
   meditans = {
     email = "meditans@gmail.com";
@@ -18223,6 +18248,13 @@
     githubId = 766350;
     name = "Richard Zetterberg";
   };
+  s0me1newithhand7s = {
+    name = "hand7s";
+    email = "s0me1newithhand7s@gmail.com";
+    matrix = "@s0me1newithhand7s:matrix.org";
+    github = "s0me1newithhand7s";
+    githubId = 117505144;
+  };
   s1341 = {
     email = "s1341@shmarya.net";
     matrix = "@s1341:matrix.org";
@@ -18751,6 +18783,12 @@
     githubId = 307899;
     name = "Gurkan Gur";
   };
+  sequencer = {
+    email = "liu@jiuyang.me";
+    github = "sequencer";
+    githubId = 5791019;
+    name = "Jiuyang Liu";
+  };
   serge = {
     email = "sb@canva.com";
     github = "serge-belov";
@@ -19194,6 +19232,12 @@
     github = "SitAAAx";
     githubId = 74413170;
     name = "Johannes Klein";
+  };
+  sith-lord-vader = {
+    email = "abhiayush23@gmail.com";
+    github = "sith-lord-vader";
+    githubId = 24388085;
+    name = "Abhishek Adhikari";
   };
   sivteck = {
     email = "sivaram1992@gmail.com";
@@ -21170,6 +21214,12 @@
     githubId = 16036882;
     name = "Thibault Gagnaux";
   };
+  tri-ler = {
+    github = "tri-ler";
+    githubId = 47867303;
+    email = "tylerh689@gmail.com";
+    name = "Tyler Hong";
+  };
   trino = {
     email = "muehlhans.hubert@ekodia.de";
     github = "hmuehlhans";
@@ -21790,6 +21840,12 @@
     github = "vinnymeller";
     githubId = 19894025;
     name = "Vinny Meller";
+  };
+  vinylen = {
+    email = "victor@viclab.se";
+    github = "vinylen";
+    githubId = 98466471;
+    name = "Victor Nilsson";
   };
   vinymeuh = {
     email = "vinymeuh@gmail.com";
