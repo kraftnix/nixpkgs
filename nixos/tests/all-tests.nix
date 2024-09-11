@@ -365,6 +365,7 @@ in {
   ft2-clone = handleTest ./ft2-clone.nix {};
   legit = handleTest ./legit.nix {};
   mimir = handleTest ./mimir.nix {};
+  gancio = handleTest ./gancio.nix {};
   garage = handleTest ./garage {};
   gemstash = handleTest ./gemstash.nix {};
   geoserver = runTest ./geoserver.nix;
@@ -444,7 +445,6 @@ in {
   hibernate-systemd-stage-1 = handleTestOn ["x86_64-linux"] ./hibernate.nix { systemdStage1 = true; };
   hitch = handleTest ./hitch {};
   hledger-web = handleTest ./hledger-web.nix {};
-  hocker-fetchdocker = handleTest ./hocker-fetchdocker {};
   hockeypuck = handleTest ./hockeypuck.nix { };
   home-assistant = handleTest ./home-assistant.nix {};
   hostname = handleTest ./hostname.nix {};

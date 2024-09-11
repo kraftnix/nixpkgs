@@ -5523,6 +5523,8 @@ self: super: with self; {
 
   hap-python = callPackage ../development/python-modules/hap-python { };
 
+  hass-client = callPackage ../development/python-modules/hass-client { };
+
   hass-nabucasa = callPackage ../development/python-modules/hass-nabucasa { };
 
   hass-splunk = callPackage ../development/python-modules/hass-splunk { };
@@ -6888,6 +6890,8 @@ self: super: with self; {
   ld2410-ble = callPackage ../development/python-modules/ld2410-ble { };
 
   ldap3 = callPackage ../development/python-modules/ldap3 { };
+
+  ldap3-bleeding-edge = callPackage ../development/python-modules/ldap3-bleeding-edge { };
 
   ldapdomaindump = callPackage ../development/python-modules/ldapdomaindump { };
 
@@ -9461,6 +9465,8 @@ self: super: with self; {
 
   packaging = callPackage ../development/python-modules/packaging { };
 
+  packaging-legacy = callPackage ../development/python-modules/packaging-legacy { };
+
   packbits = callPackage ../development/python-modules/packbits { };
 
   packet-python = callPackage ../development/python-modules/packet-python { };
@@ -9490,6 +9496,8 @@ self: super: with self; {
   panacotta = callPackage ../development/python-modules/panacotta { };
 
   panasonic-viera = callPackage ../development/python-modules/panasonic-viera { };
+
+  pandantic = callPackage ../development/python-modules/pandantic { };
 
   pandas = callPackage ../development/python-modules/pandas {
     inherit (pkgs.darwin) adv_cmds;
@@ -9525,6 +9533,8 @@ self: super: with self; {
   papis-python-rofi = callPackage ../development/python-modules/papis-python-rofi { };
 
   para = callPackage ../development/python-modules/para { };
+
+  paragraphs = callPackage ../development/python-modules/paragraphs { };
 
   param = callPackage ../development/python-modules/param { };
 
@@ -10627,6 +10637,8 @@ self: super: with self; {
   psychrolib = callPackage ../development/python-modules/psychrolib { };
 
   psycopg = callPackage ../development/python-modules/psycopg { };
+  psycopg-pool = psycopg.pool;
+  psycopg-c = psycopg.c;
 
   psycopg2 = callPackage ../development/python-modules/psycopg2 { };
 
@@ -14372,6 +14384,8 @@ self: super: with self; {
 
   snakemake-interface-storage-plugins = callPackage ../development/python-modules/snakemake-interface-storage-plugins { };
 
+  snakemake-storage-plugin-fs = callPackage ../development/python-modules/snakemake-storage-plugin-fs { };
+
   snakemake-storage-plugin-s3 = callPackage ../development/python-modules/snakemake-storage-plugin-s3 { };
 
   snakemake-storage-plugin-xrootd = callPackage ../development/python-modules/snakemake-storage-plugin-xrootd { };
@@ -15052,6 +15066,8 @@ self: super: with self; {
   synergy = callPackage ../development/python-modules/synergy { };
 
   syslog-rfc5424-formatter = callPackage ../development/python-modules/syslog-rfc5424-formatter { };
+
+  sysrsync = callPackage ../development/python-modules/sysrsync { };
 
   systembridge = callPackage ../development/python-modules/systembridge { };
 
