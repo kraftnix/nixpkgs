@@ -19450,7 +19450,7 @@ with pkgs;
 
   # TODO(@Ericson2314): Build bionic libc from source
   bionic = if stdenv.hostPlatform.useAndroidPrebuilt
-    then pkgs."androidndkPkgs_${stdenv.hostPlatform.androidNdkVer}".libraries
+    then pkgs."androidndkPkgs_${stdenv.hostPlatform.androidNdkVersion}".libraries
     else callPackage ../os-specific/linux/bionic-prebuilt { };
 
   boolstuff = callPackage ../development/libraries/boolstuff { };
@@ -23455,6 +23455,8 @@ with pkgs;
   serd = callPackage ../development/libraries/serd { };
 
   serf = callPackage ../development/libraries/serf { };
+
+  sev-snp-measure = with python3Packages; toPythonApplication sev-snp-measure;
 
   sfsexp = callPackage ../development/libraries/sfsexp { };
 
@@ -30575,9 +30577,7 @@ with pkgs;
 
   hydroxide = callPackage ../applications/networking/hydroxide { };
 
-  hyperion-ng = libsForQt5.callPackage ../applications/video/hyperion-ng {
-    protobuf = protobuf_21;
-  };
+  hyperion-ng = libsForQt5.callPackage ../applications/video/hyperion-ng { };
 
   hyperledger-fabric = callPackage ../tools/misc/hyperledger-fabric { };
 
@@ -34512,9 +34512,6 @@ with pkgs;
 
   xfractint = callPackage ../applications/graphics/xfractint { };
 
-  xine-ui = callPackage ../applications/video/xine/ui.nix { };
-  xine-lib = callPackage ../applications/video/xine/lib.nix { };
-
   xlsxgrep = callPackage ../applications/search/xlsxgrep { };
 
   xmind = callPackage ../applications/misc/xmind { };
@@ -34746,8 +34743,6 @@ with pkgs;
   zita-at1 = callPackage ../applications/audio/zita-at1 { };
 
   zita-njbridge = callPackage ../applications/audio/zita-njbridge { };
-
-  zoom-us = callPackage ../applications/networking/instant-messengers/zoom-us { };
 
   zotero = callPackage ../applications/office/zotero { };
 

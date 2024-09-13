@@ -1098,6 +1098,8 @@ self: super: with self; {
 
   awsiotpythonsdk = callPackage ../development/python-modules/awsiotpythonsdk { };
 
+  awsiotsdk = callPackage ../development/python-modules/awsiotsdk { };
+
   awsipranges = callPackage ../development/python-modules/awsipranges { };
 
   awslambdaric = callPackage ../development/python-modules/awslambdaric { };
@@ -6609,8 +6611,6 @@ self: super: with self; {
   kaa-base = callPackage ../development/python-modules/kaa-base { };
 
   kaa-metadata = callPackage ../development/python-modules/kaa-metadata { };
-
-  kafka-python = callPackage ../development/python-modules/kafka-python { };
 
   kafka-python-ng = callPackage ../development/python-modules/kafka-python-ng { };
 
@@ -14178,6 +14178,8 @@ self: super: with self; {
 
   simber = callPackage ../development/python-modules/simber { };
 
+  simple-parsing = callPackage ../development/python-modules/simple-parsing { };
+
   simple-term-menu = callPackage ../development/python-modules/simple-term-menu { };
 
   simpleaudio = callPackage ../development/python-modules/simpleaudio { };
@@ -15406,6 +15408,8 @@ self: super: with self; {
   thinc = callPackage ../development/python-modules/thinc {
     inherit (pkgs.darwin.apple_sdk.frameworks) Accelerate CoreFoundation CoreGraphics CoreVideo;
   };
+
+  thinqconnect = callPackage ../development/python-modules/thinqconnect { };
 
   thorlabspm100 = callPackage ../development/python-modules/thorlabspm100 { };
 
