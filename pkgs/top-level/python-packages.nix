@@ -443,6 +443,8 @@ self: super: with self; {
 
   aiostream = callPackage ../development/python-modules/aiostream { };
 
+  aiostreammagic = callPackage ../development/python-modules/aiostreammagic { };
+
   aioswitcher = callPackage ../development/python-modules/aioswitcher { };
 
   aiosyncthing = callPackage ../development/python-modules/aiosyncthing { };
@@ -6227,6 +6229,12 @@ self: super: with self; {
   israel-rail-api = callPackage ../development/python-modules/israel-rail-api { };
 
   itanium-demangler = callPackage ../development/python-modules/itanium-demangler { };
+
+  itk = toPythonModule (pkgs.itk.override {
+    inherit python numpy;
+    enablePython = true;
+  });
+
 
   item-synchronizer = callPackage ../development/python-modules/item-synchronizer { };
 
@@ -14197,7 +14205,7 @@ self: super: with self; {
   simplehound = callPackage ../development/python-modules/simplehound { };
 
   simpleitk = callPackage ../development/python-modules/simpleitk {
-    inherit (pkgs) simpleitk;
+    inherit (pkgs) itk simpleitk;
   };
 
   simplejson = callPackage ../development/python-modules/simplejson { };
