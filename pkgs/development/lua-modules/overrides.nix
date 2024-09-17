@@ -323,7 +323,13 @@ in
   });
 
   lua-resty-jwt = prev.lua-resty-jwt.overrideAttrs(oa: {
-    meta = oa.meta // { broken = true; };
+    src = fetchFromGitHub {
+      owner = "cdbattags";
+      repo = "lua-resty-jwt";
+      rev = "v0.2.3";
+      hash = "sha256-5lnr0ka6ijfujiRjqwCPb6jzItXx45FIN8CvhR/KiB8=";
+      fetchSubmodules = true;
+    };
   });
 
   lua-zlib = prev.lua-zlib.overrideAttrs (oa: {
@@ -470,13 +476,6 @@ in
   #   meta.broken = true;
   # });
 
-  lua-resty-openidc =  prev.lua-resty-openidc.overrideAttrs (_: {
-    postConfigure = ''
-      substituteInPlace ''${rockspecFilename} \
-        --replace '"lua-resty-session >= 2.8, <= 3.10",' '"lua-resty-session >= 2.8",'
-    '';
-  });
-
   lua-yajl =  prev.lua-yajl.overrideAttrs (oa: {
     buildInputs = oa.buildInputs ++ [
       yajl
@@ -542,6 +541,17 @@ in
       busted --lua=nlua
       runHook postCheck
       '';
+  });
+
+  lze  = prev.lze.overrideAttrs(oa: {
+    doCheck = lua.luaversion == "5.1";
+    nativeCheckInputs = [ final.nlua final.busted ];
+    checkPhase = ''
+      runHook preCheck
+      export HOME=$(mktemp -d)
+      busted --lua=nlua
+      runHook postCheck
+    '';
   });
 
   neotest  = prev.neotest.overrideAttrs(oa: {
