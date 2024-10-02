@@ -293,10 +293,6 @@ with pkgs;
 
   ares-rs = callPackage ../tools/security/ares-rs { };
 
-  arti = callPackage ../tools/security/arti {
-    inherit (darwin.apple_sdk.frameworks) CoreServices;
-  };
-
   asn1c = callPackage ../development/compilers/asn1c { };
 
   authz0 = callPackage ../tools/security/authz0 { };
@@ -1137,9 +1133,7 @@ with pkgs;
 
   fetchRepoProject = callPackage ../build-support/fetchrepoproject { };
 
-  fetchipfs = import ../build-support/fetchipfs {
-    inherit curl stdenv;
-  };
+  fetchipfs = callPackage ../build-support/fetchipfs { };
 
   fetchit = callPackage ../applications/networking/cluster/fetchit { };
 
@@ -4167,7 +4161,7 @@ with pkgs;
 
   bozohttpd-minimal = bozohttpd.override { minimal = true; };
 
-  brasero-original = lowPrio (callPackage ../tools/cd-dvd/brasero { });
+  brasero-unwrapped = callPackage ../tools/cd-dvd/brasero { };
 
   brasero = callPackage ../tools/cd-dvd/brasero/wrapper.nix { };
 
@@ -6508,7 +6502,7 @@ with pkgs;
   netplan = callPackage ../tools/admin/netplan { };
 
   skktools = callPackage ../tools/inputmethods/skk/skktools { };
-  skk-dicts = callPackage ../tools/inputmethods/skk/skk-dicts { };
+  skkDictionaries = callPackages ../tools/inputmethods/skk/skk-dicts { };
 
   libkkc-data = callPackage ../data/misc/libkkc-data { };
 
@@ -10088,8 +10082,6 @@ with pkgs;
 
   midisheetmusic = callPackage ../applications/audio/midisheetmusic { };
 
-  mikutter = callPackage ../applications/networking/instant-messengers/mikutter { };
-
   mimeo = callPackage ../tools/misc/mimeo { };
 
   mimetic = callPackage ../development/libraries/mimetic { };
@@ -10412,20 +10404,19 @@ with pkgs;
 
   nm-tray = libsForQt5.callPackage ../tools/networking/networkmanager/tray.nix { };
 
-  newsboat = callPackage ../applications/networking/feedreaders/newsboat {
-    inherit (darwin.apple_sdk.frameworks) Security Foundation;
-  };
-
   grocy = callPackage ../servers/grocy { };
 
   inherit (callPackages ../servers/nextcloud {})
-    nextcloud28 nextcloud29;
+    nextcloud28 nextcloud29 nextcloud30;
 
   nextcloud28Packages = callPackage ../servers/nextcloud/packages {
     apps = lib.importJSON ../servers/nextcloud/packages/28.json;
   };
   nextcloud29Packages = callPackage ../servers/nextcloud/packages {
     apps = lib.importJSON ../servers/nextcloud/packages/29.json;
+  };
+  nextcloud30Packages = callPackage ../servers/nextcloud/packages {
+    apps = lib.importJSON ../servers/nextcloud/packages/30.json;
   };
 
 
@@ -13194,10 +13185,6 @@ with pkgs;
 
   ttylog = callPackage ../tools/misc/ttylog { };
 
-  twm = callPackage ../tools/misc/twm {
-    inherit (darwin.apple_sdk.frameworks) Security;
-  };
-
   ipbt = callPackage ../tools/misc/ipbt { };
 
   tuckr = callPackage ../applications/misc/tuckr { };
@@ -13852,10 +13839,6 @@ with pkgs;
 
   hitch = callPackage ../servers/hitch { };
 
-  veracrypt = callPackage ../applications/misc/veracrypt {
-    wxGTK = wxGTK32;
-  };
-
   veryfasttree = callPackage ../applications/science/biology/veryfasttree { };
 
   viceroy = callPackage ../development/tools/viceroy {
@@ -14294,8 +14277,6 @@ with pkgs;
   runtimeShellPackage = bash;
 
   agdsn-zsh-config = callPackage ../shells/zsh/agdsn-zsh-config { };
-
-  nix-your-shell = callPackage ../shells/nix-your-shell { };
 
   bash = lowPrio (callPackage ../shells/bash/5.nix { });
   # WARNING: this attribute is used by nix-shell so it shouldn't be removed/renamed
@@ -15823,7 +15804,6 @@ with pkgs;
   cargo-ui = callPackage ../development/tools/rust/cargo-ui { };
   cargo-unused-features = callPackage ../development/tools/rust/cargo-unused-features { };
 
-  cargo-tauri = callPackage ../development/tools/rust/cargo-tauri { };
   cargo-mobile2 = callPackage ../development/tools/rust/cargo-mobile2 { };
 
   cargo-valgrind = callPackage ../development/tools/rust/cargo-valgrind { };
@@ -15980,10 +15960,10 @@ with pkgs;
   swiftPackages = recurseIntoAttrs (callPackage ../development/compilers/swift { });
   inherit (swiftPackages) swift swiftpm sourcekit-lsp swift-format swiftpm2nix;
 
-  swiProlog = callPackage ../development/compilers/swi-prolog {
+  swi-prolog = callPackage ../development/compilers/swi-prolog {
     inherit (darwin.apple_sdk.frameworks) Security;
   };
-  swiPrologWithGui = swiProlog.override { withGui = true; };
+  swi-prolog-gui = swi-prolog.override { withGui = true; };
 
   tbb_2020_3 = callPackage ../development/libraries/tbb/2020_3.nix { };
   tbb_2021_5 = callPackage ../development/libraries/tbb/2021_5.nix { } ;
@@ -17553,7 +17533,7 @@ with pkgs;
     inherit (darwin.apple_sdk_11_0.frameworks) CoreFoundation Security;
   };
 
-  devbox = callPackage ../development/tools/devbox { };
+  devbox = callPackage ../development/tools/devbox { buildGoModule = buildGo123Module; };
 
   libcxx = llvmPackages.libcxx;
 
@@ -17966,10 +17946,6 @@ with pkgs;
   jacoco = callPackage ../development/tools/analysis/jacoco { };
 
   jake = callPackage ../development/tools/jake { };
-
-  inherit (callPackage ../development/tools/build-managers/jam { })
-    jam
-    ftjam;
 
   javacc = callPackage ../development/tools/parsing/javacc {
     # Upstream doesn't support anything newer than Java 8.
@@ -18967,8 +18943,6 @@ with pkgs;
   acltoolkit = callPackage ../tools/security/acltoolkit { };
 
   acsccid = callPackage ../tools/security/acsccid { };
-
-  activemq = callPackage ../development/libraries/apache-activemq { };
 
   adns = callPackage ../development/libraries/adns { };
 
@@ -20776,6 +20750,7 @@ with pkgs;
 
   libbass = (callPackage ../development/libraries/audio/libbass { }).bass;
   libbass_fx = (callPackage ../development/libraries/audio/libbass { }).bass_fx;
+  libbassmix = (callPackage ../development/libraries/audio/libbass { }).bassmix;
 
   libbde = callPackage ../development/libraries/libbde { };
 
@@ -22597,7 +22572,7 @@ with pkgs;
 
   openstackclient = with python311Packages; toPythonApplication python-openstackclient;
   openstackclient-full = openstackclient.overridePythonAttrs (oldAttrs: {
-    dependencies = oldAttrs.dependencies ++ oldAttrs.passthru.optional-dependencies.cli-plugins;
+    dependencies = oldAttrs.dependencies ++ oldAttrs.optional-dependencies.cli-plugins;
   });
   barbicanclient = with python311Packages; toPythonApplication python-barbicanclient;
   glanceclient = with python311Packages; toPythonApplication python-glanceclient;
@@ -24924,7 +24899,6 @@ with pkgs;
 
   pflogsumm = callPackage ../servers/mail/postfix/pflogsumm.nix { };
 
-  pomerium = callPackage ../servers/http/pomerium { };
   pomerium-cli = callPackage ../tools/security/pomerium-cli { };
 
   postgrey = callPackage ../servers/mail/postgrey { };
@@ -25058,7 +25032,9 @@ with pkgs;
 
   azuredatastudio = callPackage ../applications/misc/azuredatastudio { };
 
-  miniflux = callPackage ../servers/miniflux { };
+  miniflux = callPackage ../by-name/mi/miniflux/package.nix {
+    buildGoModule = buildGo123Module;
+  };
 
   inherit (callPackage ../servers/mir { })
     mir
@@ -26433,8 +26409,6 @@ with pkgs;
   goresym = callPackage ../development/tools/goresym { };
 
   gotests = callPackage ../development/tools/gotests { };
-
-  gotestsum = callPackage ../development/tools/gotestsum { };
 
   gqlgenc = callPackage ../development/tools/gqlgenc { };
 
@@ -30144,8 +30118,6 @@ with pkgs;
 
   hpack = haskell.lib.compose.justStaticExecutables haskellPackages.hpack;
 
-  hpcg = callPackage ../tools/misc/hpcg { };
-
   hpl = callPackage ../tools/misc/hpl { };
 
   hpmyroom = libsForQt5.callPackage ../applications/networking/hpmyroom { };
@@ -31264,8 +31236,6 @@ with pkgs;
   minitube = libsForQt5.callPackage ../applications/video/minitube { };
 
   mimic = callPackage ../applications/audio/mimic { };
-
-  mission-center = callPackage ../applications/misc/mission-center { };
 
   meh = callPackage ../applications/graphics/meh { };
 
@@ -32664,8 +32634,6 @@ with pkgs;
   scribus = scribus_1_5;
 
   seafile-client = libsForQt5.callPackage ../applications/networking/seafile-client { };
-
-  seahub = callPackage ../applications/networking/seahub { };
 
   seatd = callPackage ../applications/misc/seatd { };
 
@@ -36566,16 +36534,6 @@ with pkgs;
 
   dl-poly-classic-mpi = callPackage ../applications/science/molecular-dynamics/dl-poly-classic { };
 
-  lammps = callPackage ../applications/science/molecular-dynamics/lammps {
-    fftw = fftw;
-  };
-
-  lammps-mpi = lowPrio (lammps.override {
-    extraBuildInputs = [
-      mpi
-    ];
-  });
-
   gromacs = callPackage ../applications/science/molecular-dynamics/gromacs {
     singlePrec = true;
     fftw = fftwSinglePrec;
@@ -38262,8 +38220,6 @@ with pkgs;
   };
 
   sct = callPackage ../tools/X11/sct { };
-
-  seafile-server = callPackage ../servers/seafile-server { };
 
   seafile-shared = callPackage ../misc/seafile-shared { };
 
