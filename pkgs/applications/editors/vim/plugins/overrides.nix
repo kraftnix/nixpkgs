@@ -2091,6 +2091,14 @@ in
     src = "${taskwarrior2.src}/scripts/vim";
   };
 
+  telekasten-nvim = super.telekasten-nvim.overrideAttrs {
+    dependencies = with self; [
+      plenary-nvim
+      telescope-nvim
+    ];
+    nvimRequireCheck = "telekasten";
+  };
+
   telescope-cheat-nvim = super.telescope-cheat-nvim.overrideAttrs {
     dependencies = with self; [
       sqlite-lua
@@ -2729,7 +2737,6 @@ in
       "coc-metals"
       "coc-pairs"
       "coc-prettier"
-      "coc-python"
       "coc-r-lsp"
       "coc-rls"
       "coc-rust-analyzer"
