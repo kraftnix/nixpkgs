@@ -180,8 +180,8 @@ rec {
   # https://docs.gradle.org/current/userguide/compatibility.html
 
   gradle_8 = gen {
-    version = "8.10";
-    hash = "sha256-W5xes/n8LJSrrqV9kL14dHyhF927+WyFnTdBGBoSvyo=";
+    version = "8.10.2";
+    hash = "sha256-McVXE+QCM6gwOCfOtCykikcmegrUurkXcSMSHnFSTCY=";
     defaultJava = jdk21;
   };
 
@@ -198,9 +198,10 @@ rec {
   };
 
   wrapGradle = {
-      lib, callPackage, mitm-cache, substituteAll, symlinkJoin, concatTextFile, makeSetupHook
+      lib, callPackage, mitm-cache, substituteAll, symlinkJoin, concatTextFile, makeSetupHook, nix-update-script
     }:
     gradle-unwrapped:
+    updateAttrPath:
     lib.makeOverridable (args:
     let
       gradle = gradle-unwrapped.override args;
@@ -226,8 +227,13 @@ rec {
 
       passthru = {
         fetchDeps = callPackage ./fetch-deps.nix { inherit mitm-cache; };
-        inherit (gradle) jdk;
+        inherit (gradle) jdk tests;
         unwrapped = gradle;
+      } // lib.optionalAttrs (updateAttrPath != null) {
+        updateScript = nix-update-script {
+          attrPath = updateAttrPath;
+          extraArgs = [ "--url=https://github.com/gradle/gradle" ];
+        };
       };
 
       meta = gradle.meta // {
