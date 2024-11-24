@@ -27,6 +27,12 @@ let
 
       nativeBuildInputs = [ installShellFiles ];
 
+      ldflags = [
+        "-X github.com/hashicorp/nomad/version.Version=${version}"
+        "-X github.com/hashicorp/nomad/version.VersionPrerelease="
+        "-X github.com/hashicorp/nomad/version.BuildDate=1970-01-01T00:00:00Z"
+      ];
+
       # ui:
       #  Nomad release commits include the compiled version of the UI, but the file
       #  is only included if we build with the ui tag.
@@ -89,9 +95,9 @@ rec {
 
   nomad_1_9 = generic {
     buildGoModule = buildGo123Module;
-    version = "1.9.0";
-    sha256 = "sha256-MJNPYSH3KsRmGQeOcWw4VvDeFGinfsyGSo4q3OdOZo8=";
-    vendorHash = "sha256-Ss/qwQ14VUu40nXaIgTfNuj95ekTTVrY+zcStFDSCyI=";
+    version = "1.9.3";
+    sha256 = "sha256-KjVr9NIL9Qw10EoP/C+2rjtqU2qBSF6SKpIvQWQJWuo=";
+    vendorHash = "sha256-paUI5mYa9AvMsI0f/VeVdnZzwKS9gsBIb6T4KmugPKQ=";
     license = lib.licenses.bsl11;
     passthru.tests.nomad = nixosTests.nomad;
     preCheck = ''

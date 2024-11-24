@@ -74,11 +74,11 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "gnome-control-center";
-  version = "47.0.1";
+  version = "47.1.1";
 
   src = fetchurl {
     url = "mirror://gnome/sources/gnome-control-center/${lib.versions.major finalAttrs.version}/gnome-control-center-${finalAttrs.version}.tar.xz";
-    hash = "sha256-h+7fdDN7PGHfGaDcjCW1wpYp+1+Rm+w0y9CkscfbNWc=";
+    hash = "sha256-BR/UBXFX9LIzcBP778luPRKWVOP8lg1ISdNUJSQAvnc=";
   };
 
   patches = [
@@ -200,9 +200,6 @@ stdenv.mkDerivation (finalAttrs: {
       # WM keyboard shortcuts
       --prefix XDG_DATA_DIRS : "${mutter}/share"
     )
-    for i in $out/share/applications/*; do
-      substituteInPlace $i --replace "Exec=gnome-control-center" "Exec=$out/bin/gnome-control-center"
-    done
   '';
 
   separateDebugInfo = true;
