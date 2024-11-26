@@ -5396,17 +5396,7 @@ with pkgs;
 
   subsurface = libsForQt5.callPackage ../applications/misc/subsurface { };
 
-  sudo = callPackage ../tools/security/sudo { };
-
   sudo-nspawn = sudo.override { withStaticSudoers = true; };
-
-  sudo-rs = callPackage ../tools/security/sudo-rs { };
-
-  suidChroot = callPackage ../tools/system/suid-chroot { };
-
-  sundtek = callPackage ../misc/drivers/sundtek { };
-
-  sunxi-tools = callPackage ../development/tools/sunxi-tools { };
 
   sumorobot-manager = python3Packages.callPackage ../applications/science/robotics/sumorobot-manager { };
 
@@ -18692,12 +18682,6 @@ with pkgs;
   nixos-grub2-theme = callPackage ../data/misc/nixos-artwork/grub2-theme.nix { };
 
   nixos-nspawn = callPackage ../tools/virtualization/nixos-nspawn { };
-
-  nixos-bgrt-plymouth = callPackage ../data/themes/nixos-bgrt-plymouth { };
-
-  nixos-container = callPackage ../tools/virtualization/nixos-container { };
-
-  nixos-generators = callPackage ../tools/nix/nixos-generators { };
 
   nixos-rebuild = callPackage ../os-specific/linux/nixos-rebuild { };
 
