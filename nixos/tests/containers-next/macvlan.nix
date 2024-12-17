@@ -46,7 +46,7 @@ import ../make-test-python.nix ({ pkgs, lib, ... }: {
     # in `nspawn-network.c` (see `setup_macvlans`).
     systemd.network.networks."20-mv-eth1-host" = {
       matchConfig.Name = "mv-eth1-host";
-      networkConfig.IPForward = "yes";
+      networkConfig.IPv4Forwarding = "yes";
       dhcpV4Config.ClientIdentifier = "mac";
       address = lib.mkForce [
         "192.168.2.2/24"

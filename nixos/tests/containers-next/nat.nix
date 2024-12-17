@@ -9,7 +9,7 @@ import ../make-test-python.nix ({ pkgs, lib, ... }: {
         matchConfig.Name = "eth1";
         address = [ "fd23::1/64" "192.168.1.1/24" ];
         routes = [
-          { routeConfig.Destination = "fd24::1/64"; }
+          { Destination = "fd24::1/64"; }
         ];
       };
 
@@ -27,9 +27,10 @@ import ../make-test-python.nix ({ pkgs, lib, ... }: {
       systemd.network.networks."10-eth1" = {
         matchConfig.Name = "eth1";
         address = [ "fd24::1/64" "192.168.1.2/24" ];
-        networkConfig.IPForward = "yes";
+        networkConfig.IPv4Forwarding = "yes";
+        networkConfig.IPv6Forwarding = "yes";
         routes = [
-          { routeConfig.Destination = "fd23::1/64"; }
+          { Destination = "fd23::1/64"; }
         ];
       };
 

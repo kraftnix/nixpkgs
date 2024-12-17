@@ -66,7 +66,7 @@ import ../make-test-python.nix ({ pkgs, lib, ... }: let
     };
     systemd.network.networks."20-mv-eth1-host" = {
       matchConfig.Name = "mv-eth1-host";
-      networkConfig.IPForward = "yes";
+      networkConfig.IPv4Forwarding = "yes";
       dhcpV4Config.ClientIdentifier = "mac";
       linkConfig.RequiredForOnline = "no";
       address = lib.mkForce [
@@ -127,7 +127,7 @@ in {
       # Switching network stacks entirely isn't really possible. So just reboot
       # (to simulate the update, a bootloader which boots into the new config is needed).
       virtualisation.useBootLoader = true;
-      virtualisation.persistBootDevice = true;
+      virtualisation.useEFIBoot = true;
       boot.loader = {
         efi.canTouchEfiVariables = false;
         grub = {

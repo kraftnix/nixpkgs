@@ -57,7 +57,8 @@ let
       else if v4Nat then "ipv4"
       else if v6Nat then "ipv6"
       else "no";
-    IPForward = "yes";
+    IPv4Forwarding = "yes";
+    IPv6Forwarding = "yes";
     LLDP = "yes";
     EmitLLDP = "customer-bridge";
     IPv6AcceptRA = "no";

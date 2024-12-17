@@ -22,7 +22,7 @@ import ../make-test-python.nix ({ pkgs, lib, ... }: let
       networks."20-wg0" = {
         matchConfig.Name = "wg0";
         networkConfig = {
-          IPForward = "yes";
+          IPv4Forwarding = "yes";
           DHCP = "no";
           DNS = "192.168.20.2";
         };
