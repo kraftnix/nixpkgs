@@ -90,8 +90,9 @@
     ];
     deezer =
       ps: with ps; [
+        deezer-python-gql
         pycryptodome
-      ]; # missing deezer-python-gql
+      ];
     digitally_incorporated = ps: [
     ];
     dlna =
