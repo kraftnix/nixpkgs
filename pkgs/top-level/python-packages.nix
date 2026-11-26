@@ -4350,6 +4350,8 @@ self: super: with self; {
 
   deezer-python = callPackage ../development/python-modules/deezer-python { };
 
+  deezer-python-gql = callPackage ../development/python-modules/deezer-python-gql { };
+
   defang = callPackage ../development/python-modules/defang { };
 
   defcon = callPackage ../development/python-modules/defcon { };
